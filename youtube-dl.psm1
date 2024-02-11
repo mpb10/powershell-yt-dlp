@@ -13,7 +13,7 @@
 	Requires Windows 7 or higher and PowerShell 5.0 or greater
 	Author: mpb10
 	Updated: April 27th 2021
-	Version: 3.0.4
+	Version: 0.1.0
 
 .LINK 
 	https://github.com/mpb10/powershell-yt-dlp
@@ -582,126 +582,60 @@ function Get-VideoList {
 
 
 
-function Get-VideoPlaylist {
-    param (
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Path to the file containing a list of playlist URLs to download.')]
-        [string]
-        $PlaylistFilePath,
+Function Get-MainMenu {
 
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Array object containing a list of playlist URLs to download.')]
-        [array]
-        $UrlList = @(),
-
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Download the video to this directory.')]
-        [string]
-        $Path = (Get-Location),
-
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
-        [string]
-        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
-
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
-        [string]
-        $ExecutablePath
-    )
-
-    # Ensure that one of the 'Get-Playlist' options was provided to the command and then run it.
-    $GetPlaylistOptions = ''
-    if (Test-Path Variable:PlaylistFilePath) {
-        $GetPlaylistOptions = "-Path $PlaylistFilePath"
-    } elseif (Test-Path Variable:UrlList) {
-        $GetPlaylistOptions = "-UrlList $UrlList"
-    } else {
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Neither ''-UrlList'' or ''-PlaylistFilePath'' parameters were provided.'
-    }
-    $PlaylistUrls = Get-Playlist $GetPlaylistOptions
-    
-    # Ensure that the '$YtDlOptions parameter contains the '--yes-playlist' yt-dlp option.
-    if ($YtDlOptions -notcontains 'yes-playlist') {
-        $YtDlOptions = $YtDlOptions + ' --yes-playlist'
-    }
-
-    # Download each playlist URL.
-    foreach ($UrlItem in $PlaylistUrls ) {
-        if (Test-Path Variable:ExecutablePath) {
-            Get-Video -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions -ExecutablePath $ExecutablePath
-        } else {
-            Get-Video -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions
-        }
-    }
-
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded videos from $($PlaylistUrls.Count) playlists to '$Path'."
 }
 
 
 
-function Get-AudioPlaylist {
-    param (
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Path to the file containing a list of playlist URLs to download.')]
-        [string]
-        $PlaylistFilePath,
+Function Get-DownloadMenu {
 
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Array object containing a list of playlist URLs to download.')]
-        [array]
-        $UrlList = @(),
+}
 
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Download the video''s audio to this directory.')]
-        [string]
-        $Path = (Get-Location),
 
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
-        [string]
-        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
-        
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
-        [string]
-        $ExecutablePath
-    )
 
-    # Ensure that one of the 'Get-Playlist' options was provided to the command and then run it.
-    $GetPlaylistOptions = ''
-    if (Test-Path Variable:PlaylistFilePath) {
-        $GetPlaylistOptions = "-Path $PlaylistFilePath"
-    } elseif (Test-Path Variable:UrlList) {
-        $GetPlaylistOptions = "-UrlList $UrlList"
-    } else {
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Neither ''-UrlList'' or ''-PlaylistFilePath'' parameters were provided.'
-    }
-    $PlaylistUrls = Get-Playlist $GetPlaylistOptions
+Function Get-SettingsMenu {
+
+}
+
+
+
+# ################################
+# Testing functions
+# ################################
+
+
+
+Function Test-YtDlpInstall {
+
+}
+
+
+
+Function Test-YtDlpUninstall {
     
-    # Ensure that the '$YtDlOptions parameter contains the '--yes-playlist' yt-dlp option.
-    if ($YtDlOptions -notcontains 'yes-playlist') {
-        $YtDlOptions = $YtDlOptions + ' --yes-playlist'
-    }
+}
 
-    # Download each playlist URL.
-    foreach ($UrlItem in $PlaylistUrls ) {
-        if (Test-Path Variable:ExecutablePath) {
-            Get-Audio -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions -ExecutablePath $ExecutablePath
-        } else {
-            Get-Audio -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions
-        }
-    }
 
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video audio from $($PlaylistUrls.Count) playlists to '$Path'."
+
+Function Test-YtDlpVideo {
+    
+}
+
+
+
+Function Test-YtDlpVideoAudio {
+    
+}
+
+
+
+Function Test-YtDlpVideoArchive {
+    
+}
+
+
+
+Function Test-YtDlpVideoList {
+    
 }
