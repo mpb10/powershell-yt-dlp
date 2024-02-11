@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS 
-	A collection of commandlets used to support the PowerShell-Youtube-Dlp script.
+	A collection of commandlets used to support the PowerShell-Yt-Dlp script.
 	
 .DESCRIPTION 
-	This PowerShell module is used to support the PowerShell-Youtube-Dlp.
+	This PowerShell module is used to support the PowerShell-Yt-Dlp.
 
 .EXAMPLE 
 	Import-Module -Force ".\yt-dlp.psm1"
@@ -193,7 +193,7 @@ function Get-Download {
 
 
 # Function for downloading the yt-dlp.exe executable file.
-function Get-YoutubeDlp {
+function Get-YtDlp {
     param(
         [Parameter(Mandatory = $false, HelpMessage = 'Download yt-dlp.exe to this path.')]
         [string]
@@ -210,7 +210,7 @@ function Get-YoutubeDlp {
     else {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download the yt-dlp executable to '$Path'."
     }
-} # End Get-YoutubeDlp function
+} # End Get-YtDlp function
 
 
 
@@ -301,7 +301,7 @@ function Install-Script {
 	if ((Test-Path "$Path\bin\yt-dlp.exe") -eq $False) {
 		Write-Log -ConsoleOnly -Severity 'Warning' -Message "The yt-dlp executable was not found at '$Path\bin\yt-dlp.exe'."
 
-		Get-YoutubeDlp -Path "$Path\bin\yt-dlp.exe"
+		Get-YtDlp -Path "$Path\bin\yt-dlp.exe"
 	}
 
 	# Ensure that 'ffmpeg' is installed.
@@ -360,8 +360,7 @@ function Install-Script {
         }
     }
 
-    # If the '-DesktopShortcut' parameter is provided, create a shortcut on the desktop that is used
-    # to run the 'yt-dlp-gui.ps1' script.
+    # If the '-DesktopShortcut' parameter is provided, create a shortcut on the desktop that is used to run the 'yt-dlp-gui.ps1' script.
     if ($DesktopShortcut) {
         $DesktopPath = [environment]::GetFolderPath('Desktop')
 
@@ -382,8 +381,7 @@ function Install-Script {
         }
     }
 
-    # If the '-StartMenuShortcut' parameter is provided, create a start menu directory containing a shortcut
-    # used to run the 'yt-dlp-gui.ps1' script.
+    # If the '-StartMenuShortcut' parameter is provided, create a start menu directory containing a shortcut used to run the 'yt-dlp-gui.ps1' script.
     if ($StartMenuShortcut) {
         $AppDataPath = [Environment]::GetFolderPath('ApplicationData')
 
@@ -510,7 +508,7 @@ function Get-Video {
             Mandatory = $false,
             HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
+        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
 
         [Parameter(
             Mandatory = $false,
@@ -523,13 +521,13 @@ function Get-Video {
         $Path = Resolve-Path -Path $Path
     }
     $Url = "'$($Url.Trim())'"
-    $YoutubeDlOptions = $YoutubeDlOptions.Trim()
+    $YtDlOptions = $YtDlOptions.Trim()
     
     if ($ExecutablePath.Length -gt 0) {
         $ExecutablePath = $ExecutablePath.Trim()
-        $DownloadCommand = "$ExecutablePath\yt-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "$ExecutablePath\yt-dlp $YtDlOptions $Url"
     } else {
-        $DownloadCommand = "yt-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "yt-dlp $YtDlOptions $Url"
     }
 
     # Check if the provided '-Path' parameter is a valid directory.
@@ -549,7 +547,7 @@ function Get-Video {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'ffmpeg' in the system PATH variable."
     }
 
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL $Url to '$Path' using yt-dlp options of '$YoutubeDlOptions'."
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL $Url to '$Path' using yt-dlp options of '$YtDlOptions'."
     Invoke-Expression $DownloadCommand
 } # End Get-Video function
 
@@ -573,7 +571,7 @@ function Get-Audio {
             Mandatory = $false,
             HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
+        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
 
         [Parameter(
             Mandatory = $false,
@@ -586,13 +584,13 @@ function Get-Audio {
         $Path = Resolve-Path -Path $Path
     }
     $Url = "'$($Url.Trim())'"
-    $YoutubeDlOptions = $YoutubeDlOptions.Trim()
+    $YtDlOptions = $YtDlOptions.Trim()
 
     if ($ExecutablePath.Length -gt 0) {
         $ExecutablePath = $ExecutablePath.Trim()
-        $DownloadCommand = "$ExecutablePath\yt-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "$ExecutablePath\yt-dlp $YtDlOptions $Url"
     } else {
-        $DownloadCommand = "yt-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "yt-dlp $YtDlOptions $Url"
     }
 
     # Check if the provided '-Path' parameter is a valid directory.
@@ -612,13 +610,13 @@ function Get-Audio {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'ffmpeg' in the system PATH variable."
     }
 
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio from URL of $Url to '$Path' using yt-dlp options of '$YoutubeDlOptions'."
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio from URL of $Url to '$Path' using yt-dlp options of '$YtDlOptions'."
     Invoke-Expression $DownloadCommand
 } # End Get-Audio function
 
 
 
-# Function for retrieving an array of Youtube playlist URLs.
+# Function for retrieving an array of Yt playlist URLs.
 function Get-Playlist {
     param (
         [Parameter(
@@ -684,7 +682,7 @@ function Get-VideoPlaylist {
             Mandatory = $false,
             HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
+        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
 
         [Parameter(
             Mandatory = $false,
@@ -704,17 +702,17 @@ function Get-VideoPlaylist {
     }
     $PlaylistUrls = Get-Playlist $GetPlaylistOptions
     
-    # Ensure that the '$YoutubeDlOptions parameter contains the '--yes-playlist' yt-dlp option.
-    if ($YoutubeDlOptions -notcontains 'yes-playlist') {
-        $YoutubeDlOptions = $YoutubeDlOptions + ' --yes-playlist'
+    # Ensure that the '$YtDlOptions parameter contains the '--yes-playlist' yt-dlp option.
+    if ($YtDlOptions -notcontains 'yes-playlist') {
+        $YtDlOptions = $YtDlOptions + ' --yes-playlist'
     }
 
     # Download each playlist URL.
     foreach ($UrlItem in $PlaylistUrls ) {
         if (Test-Path Variable:ExecutablePath) {
-            Get-Video -Path $Path -Url $UrlItem -YoutubeDlOptions $YoutubeDlOptions -ExecutablePath $ExecutablePath
+            Get-Video -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions -ExecutablePath $ExecutablePath
         } else {
-            Get-Video -Path $Path -Url $UrlItem -YoutubeDlOptions $YoutubeDlOptions
+            Get-Video -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions
         }
     }
 
@@ -747,7 +745,7 @@ function Get-AudioPlaylist {
             Mandatory = $false,
             HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
+        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
         
         [Parameter(
             Mandatory = $false,
@@ -767,17 +765,17 @@ function Get-AudioPlaylist {
     }
     $PlaylistUrls = Get-Playlist $GetPlaylistOptions
     
-    # Ensure that the '$YoutubeDlOptions parameter contains the '--yes-playlist' yt-dlp option.
-    if ($YoutubeDlOptions -notcontains 'yes-playlist') {
-        $YoutubeDlOptions = $YoutubeDlOptions + ' --yes-playlist'
+    # Ensure that the '$YtDlOptions parameter contains the '--yes-playlist' yt-dlp option.
+    if ($YtDlOptions -notcontains 'yes-playlist') {
+        $YtDlOptions = $YtDlOptions + ' --yes-playlist'
     }
 
     # Download each playlist URL.
     foreach ($UrlItem in $PlaylistUrls ) {
         if (Test-Path Variable:ExecutablePath) {
-            Get-Audio -Path $Path -Url $UrlItem -YoutubeDlOptions $YoutubeDlOptions -ExecutablePath $ExecutablePath
+            Get-Audio -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions -ExecutablePath $ExecutablePath
         } else {
-            Get-Audio -Path $Path -Url $UrlItem -YoutubeDlOptions $YoutubeDlOptions
+            Get-Audio -Path $Path -Url $UrlItem -YtDlOptions $YtDlOptions
         }
     }
 
