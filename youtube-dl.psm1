@@ -6,7 +6,7 @@
 	This PowerShell module is used to support the PowerShell-Youtube-Dlp.
 
 .EXAMPLE 
-	Import-Module -Force ".\youtube-dlp.psm1"
+	Import-Module -Force ".\yt-dlp.psm1"
 	    Imports the module and allows all of the commandlets to be called elsewhere.
 	
 .NOTES 
@@ -16,7 +16,7 @@
 	Version: 3.0.4
 
 .LINK 
-	https://github.com/mpb10/powershell-youtube-dlp
+	https://github.com/mpb10/powershell-yt-dlp
 #>
 
 
@@ -59,7 +59,7 @@ function Write-Log {
 
         [Parameter(Mandatory = $false, HelpMessage = 'Location of the log file.')]
         [string]
-        $FilePath = "$(Get-Location)\powershell-youtube-dlp.log",
+        $FilePath = "$(Get-Location)\powershell-yt-dlp.log",
 
         [Parameter(Mandatory = $false, HelpMessage = 'Whether to output to the console in addition to the log file.')]
         [switch]
@@ -192,23 +192,23 @@ function Get-Download {
 
 
 
-# Function for downloading the youtube-dlp.exe executable file.
+# Function for downloading the yt-dlp.exe executable file.
 function Get-YoutubeDlp {
     param(
-        [Parameter(Mandatory = $false, HelpMessage = 'Download youtube-dlp.exe to this path.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Download yt-dlp.exe to this path.')]
         [string]
         $Path = "$(Get-Location)\yt-dlp.exe"
     )
 
-    # Use the 'Get-Download' function to download the youtube-dlp.exe executable file.
+    # Use the 'Get-Download' function to download the yt-dlp.exe executable file.
     Get-Download -Url 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -Path $Path
 
     # Check if the download was successful.
     if (Test-Path -Path $Path) {
-        Write-Log -ConsoleOnly -Severity 'Info' -Message "Finished downloading the youtube-dlp executable to '$Path'."
+        Write-Log -ConsoleOnly -Severity 'Info' -Message "Finished downloading the yt-dlp executable to '$Path'."
     }
     else {
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download the youtube-dlp executable to '$Path'."
+        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download the yt-dlp executable to '$Path'."
     }
 } # End Get-YoutubeDlp function
 
@@ -253,26 +253,26 @@ function Get-Ffmpeg {
 
 
 
-# Function for downloading and installing powershell-youtube-dlp script files and executables.
+# Function for downloading and installing powershell-yt-dlp script files and executables.
 function Install-Script {
     param (
-        [Parameter(Mandatory = $true, HelpMessage = 'The directory to install the ''powershell-youtube-dlp'' script and executables to.')]
+        [Parameter(Mandatory = $true, HelpMessage = 'The directory to install the ''powershell-yt-dlp'' script and executables to.')]
         [string]
         $Path,
 
-        [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-youtube-dlp'' GitHub repository to download from.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
         [string]
         $Branch = 'master',
 
-        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a local shortcut that is used to run the ''youtube-dlp-gui.ps1'' script.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a local shortcut that is used to run the ''yt-dlp-gui.ps1'' script.')]
         [switch]
         $LocalShortcut = $false,
         
-        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a desktop shortcut that is used to run the ''youtube-dlp-gui.ps1'' script.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a desktop shortcut that is used to run the ''yt-dlp-gui.ps1'' script.')]
         [switch]
         $DesktopShortcut = $false,
         
-        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a start menu shortcut that is used to run the ''youtube-dlp-gui.ps1'' script.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a start menu shortcut that is used to run the ''yt-dlp-gui.ps1'' script.')]
         [switch]
         $StartMenuShortcut = $false
     )
@@ -297,9 +297,9 @@ function Install-Script {
 		New-Item -Type 'Directory' -Path "$Path\etc" | Out-Null
 	}
 
-	# Ensure that 'youtube-dlp' is installed.
+	# Ensure that 'yt-dlp' is installed.
 	if ((Test-Path "$Path\bin\yt-dlp.exe") -eq $False) {
-		Write-Log -ConsoleOnly -Severity 'Warning' -Message "The youtube-dlp executable was not found at '$Path\bin\yt-dlp.exe'."
+		Write-Log -ConsoleOnly -Severity 'Warning' -Message "The yt-dlp executable was not found at '$Path\bin\yt-dlp.exe'."
 
 		Get-YoutubeDlp -Path "$Path\bin\yt-dlp.exe"
 	}
@@ -312,13 +312,13 @@ function Install-Script {
 	}
 
 	# Ensure that the script files are installed.
-	if ((Test-Path -Path "$Path\bin\youtube-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\youtube-dlp-gui.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false) {
+	if ((Test-Path -Path "$Path\bin\yt-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-gui.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false) {
 		Write-Log -ConsoleOnly -Severity 'Warning' -Message "One or more of the PowerShell script files were not found in '$Path'."
 
-		Get-Download -Url "https://github.com/mpb10/powershell-youtube-dlp/raw/$Branch/youtube-dlp.psm1" -Path "$Path\bin\youtube-dlp.psm1"
-		Get-Download -Url "https://github.com/mpb10/powershell-youtube-dlp/raw/$Branch/youtube-dlp-gui.ps1" -Path "$Path\bin\youtube-dlp-gui.ps1"
-		Get-Download -Url "https://github.com/mpb10/powershell-youtube-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
-		Get-Download -Url "https://github.com/mpb10/powershell-youtube-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"        
+		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp.psm1" -Path "$Path\bin\yt-dlp.psm1"
+		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-gui.ps1" -Path "$Path\bin\yt-dlp-gui.ps1"
+		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
+		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"        
 	}
 
 	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
@@ -341,90 +341,90 @@ function Install-Script {
 		}
 	}
 	
-	# If the '-LocalShortcut' parameter is provided, create a shortcut in the same directory as the 'youtube-dlp-gui.ps1' script that is used to run it.
+	# If the '-LocalShortcut' parameter is provided, create a shortcut in the same directory as the 'yt-dlp-gui.ps1' script that is used to run it.
     if ($LocalShortcut) {
-        if ((Test-Path -Path "$Path\powershell-youtube-dlp.lnk") -eq $false) {
+        if ((Test-Path -Path "$Path\powershell-yt-dlp.lnk") -eq $false) {
             # Create the shortcut.
-            New-Shortcut -Path "$Path\powershell-youtube-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\youtube-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
-            if (Test-Path -Path "$Path\powershell-youtube-dlp.lnk") {
-                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'youtube-dlp-gui.ps1' at: '$Path\powershell-youtube-dlp.lnk'"
+            if (Test-Path -Path "$Path\powershell-yt-dlp.lnk") {
+                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp-gui.ps1' at: '$Path\powershell-yt-dlp.lnk'"
             }
             else {
-                return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$Path\powershell-youtube-dlp.lnk'"
+                return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$Path\powershell-yt-dlp.lnk'"
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$Path\powershell-youtube-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\youtube-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
         }
     }
 
     # If the '-DesktopShortcut' parameter is provided, create a shortcut on the desktop that is used
-    # to run the 'youtube-dlp-gui.ps1' script.
+    # to run the 'yt-dlp-gui.ps1' script.
     if ($DesktopShortcut) {
         $DesktopPath = [environment]::GetFolderPath('Desktop')
 
-        if ((Test-Path -Path "$DesktopPath\powershell-youtube-dlp.lnk") -eq $false) {
+        if ((Test-Path -Path "$DesktopPath\powershell-yt-dlp.lnk") -eq $false) {
             # Create the shortcut.
-            New-Shortcut -Path "$DesktopPath\powershell-youtube-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\youtube-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
-            if (Test-Path -Path "$DesktopPath\powershell-youtube-dlp.lnk") {
-                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'youtube-dlp-gui.ps1' at: '$DesktopPath\powershell-youtube-dlp.lnk'"
+            if (Test-Path -Path "$DesktopPath\powershell-yt-dlp.lnk") {
+                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp-gui.ps1' at: '$DesktopPath\powershell-yt-dlp.lnk'"
             }
             else {
-                return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$DesktopPath\powershell-youtube-dlp.lnk'"
+                return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$DesktopPath\powershell-yt-dlp.lnk'"
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$DesktopPath\powershell-youtube-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\youtube-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
         }
     }
 
     # If the '-StartMenuShortcut' parameter is provided, create a start menu directory containing a shortcut
-    # used to run the 'youtube-dlp-gui.ps1' script.
+    # used to run the 'yt-dlp-gui.ps1' script.
     if ($StartMenuShortcut) {
         $AppDataPath = [Environment]::GetFolderPath('ApplicationData')
 
-        if ((Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp\powershell-youtube-dlp.lnk") -eq $false) {
+        if ((Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk") -eq $false) {
 
             # Ensure the start menu directory exists.
-            if ((Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp" -PathType 'Container') -eq $false) {
-                New-Item -Type 'Directory' -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp" | Out-Null
+            if ((Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp" -PathType 'Container') -eq $false) {
+                New-Item -Type 'Directory' -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp" | Out-Null
             }
 
             # Create the shortcut.
-            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp\powershell-youtube-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\youtube-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
-            if (Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp\powershell-youtube-dlp.lnk") {
-                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a start menu directory and shortcut for running 'youtube-dlp-gui.ps1' at: '$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp\powershell-youtube-dlp.lnk'"
+            if (Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk") {
+                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a start menu directory and shortcut for running 'yt-dlp-gui.ps1' at: '$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk'"
             }
             else {
-                return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp\powershell-youtube-dlp.lnk'"
+                return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk'"
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp\powershell-youtube-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\youtube-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
         }
     }
 } # End Install-Script function
 
 
 
-# Function for uninstalling the powershell-youtube-dlp script files and directories.
+# Function for uninstalling the powershell-yt-dlp script files and directories.
 function Uninstall-Script {
     param (
         [Parameter(
             Mandatory = $true,
-            HelpMessage = 'The directory where the ''powershell-youtube-dlp'' script and executables are currently installed to.')]
+            HelpMessage = 'The directory where the ''powershell-yt-dlp'' script and executables are currently installed to.')]
         [string]
         $Path,
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'Whether to remove all files that reside in the ''powershell-youtube-dlp'' install directory.')]
+            HelpMessage = 'Whether to remove all files that reside in the ''powershell-yt-dlp'' install directory.')]
         [switch]
         $Force = $false
     )
@@ -433,17 +433,17 @@ function Uninstall-Script {
 
     # Remove the script files, executables, and shortcuts
     $FileList = @(
-        "$Path\bin\youtube-dlp.exe",
+        "$Path\bin\yt-dlp.exe",
         "$Path\bin\ffmpeg.exe",
         "$Path\bin\ffplay.exe",
         "$Path\bin\ffprobe.exe",
-        "$Path\bin\youtube-dlp.psm1",
-        "$Path\bin\youtube-dlp-gui.ps1",
+        "$Path\bin\yt-dlp.psm1",
+        "$Path\bin\yt-dlp-gui.ps1",
         "$Path\README.md",
         "$Path\LICENSE",
-        "$Path\powershell-youtube-dlp.lnk",
-        "$DesktopPath\powershell-youtube-dlp.lnk",
-        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp\powershell-youtube-dlp.lnk",
+        "$Path\powershell-yt-dlp.lnk",
+        "$DesktopPath\powershell-yt-dlp.lnk",
+        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk",
         "$Path\var\cache\*.*"
     )
     foreach ($Item in $FileList) {
@@ -469,7 +469,7 @@ function Uninstall-Script {
 
     # Remove the directories that were created by the script only if they are empty.
     $FileListDirectories = @(
-        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-youtube-dlp",
+        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp",
         "$Path\bin",
         "$Path\etc",
         "$Path\var",
@@ -487,7 +487,7 @@ function Uninstall-Script {
         }
     }
 
-    Write-Log -ConsoleOnly -Severity 'Info' -Message 'Finished uninstalling ''powershell-youtube-dlp''.'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message 'Finished uninstalling ''powershell-yt-dlp''.'
 } # End Uninstall-Script function
 
 
@@ -508,13 +508,13 @@ function Get-Video {
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'Additional youtube-dlp options to pass to the download command.')]
+            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
         $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the youtube-dlp and ffmpeg executable files.')]
+            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
         $ExecutablePath
     )
@@ -527,9 +527,9 @@ function Get-Video {
     
     if ($ExecutablePath.Length -gt 0) {
         $ExecutablePath = $ExecutablePath.Trim()
-        $DownloadCommand = "$ExecutablePath\youtube-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "$ExecutablePath\yt-dlp $YoutubeDlOptions $Url"
     } else {
-        $DownloadCommand = "youtube-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "yt-dlp $YoutubeDlOptions $Url"
     }
 
     # Check if the provided '-Path' parameter is a valid directory.
@@ -537,10 +537,10 @@ function Get-Video {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Provided path either does not exist or is not a directory.'
     }
 
-    # Check whether the 'youtube-dlp' command is in the system's PATH variable
-    if ($null -eq (Get-Command "youtube-dlp" -ErrorAction SilentlyContinue)) 
+    # Check whether the 'yt-dlp' command is in the system's PATH variable
+    if ($null -eq (Get-Command "yt-dlp" -ErrorAction SilentlyContinue)) 
     { 
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'youtube-dlp' in the system PATH variable."
+        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'yt-dlp' in the system PATH variable."
     }
 
     # Check whether the 'ffmpeg' command is in the system's PATH variable
@@ -549,7 +549,7 @@ function Get-Video {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'ffmpeg' in the system PATH variable."
     }
 
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL $Url to '$Path' using youtube-dlp options of '$YoutubeDlOptions'."
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL $Url to '$Path' using yt-dlp options of '$YoutubeDlOptions'."
     Invoke-Expression $DownloadCommand
 } # End Get-Video function
 
@@ -571,13 +571,13 @@ function Get-Audio {
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'Additional youtube-dlp options to pass to the download command.')]
+            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
         $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the youtube-dlp and ffmpeg executable files.')]
+            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
         $ExecutablePath
     )
@@ -590,9 +590,9 @@ function Get-Audio {
 
     if ($ExecutablePath.Length -gt 0) {
         $ExecutablePath = $ExecutablePath.Trim()
-        $DownloadCommand = "$ExecutablePath\youtube-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "$ExecutablePath\yt-dlp $YoutubeDlOptions $Url"
     } else {
-        $DownloadCommand = "youtube-dlp $YoutubeDlOptions $Url"
+        $DownloadCommand = "yt-dlp $YoutubeDlOptions $Url"
     }
 
     # Check if the provided '-Path' parameter is a valid directory.
@@ -600,10 +600,10 @@ function Get-Audio {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Provided path either does not exist or is not a directory.'
     }
 
-    # Check whether the 'youtube-dlp' command is in the system's PATH variable
-    if ($null -eq (Get-Command "youtube-dlp" -ErrorAction SilentlyContinue)) 
+    # Check whether the 'yt-dlp' command is in the system's PATH variable
+    if ($null -eq (Get-Command "yt-dlp" -ErrorAction SilentlyContinue)) 
     { 
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'youtube-dlp' in the system PATH variable."
+        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'yt-dlp' in the system PATH variable."
     }
 
     # Check whether the 'ffmpeg' command is in the system's PATH variable
@@ -612,7 +612,7 @@ function Get-Audio {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'ffmpeg' in the system PATH variable."
     }
 
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio from URL of $Url to '$Path' using youtube-dlp options of '$YoutubeDlOptions'."
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio from URL of $Url to '$Path' using yt-dlp options of '$YoutubeDlOptions'."
     Invoke-Expression $DownloadCommand
 } # End Get-Audio function
 
@@ -682,13 +682,13 @@ function Get-VideoPlaylist {
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'Additional youtube-dlp options to pass to the download command.')]
+            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
         $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the youtube-dlp and ffmpeg executable files.')]
+            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
         $ExecutablePath
     )
@@ -704,7 +704,7 @@ function Get-VideoPlaylist {
     }
     $PlaylistUrls = Get-Playlist $GetPlaylistOptions
     
-    # Ensure that the '$YoutubeDlOptions parameter contains the '--yes-playlist' youtube-dlp option.
+    # Ensure that the '$YoutubeDlOptions parameter contains the '--yes-playlist' yt-dlp option.
     if ($YoutubeDlOptions -notcontains 'yes-playlist') {
         $YoutubeDlOptions = $YoutubeDlOptions + ' --yes-playlist'
     }
@@ -745,13 +745,13 @@ function Get-AudioPlaylist {
 
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'Additional youtube-dlp options to pass to the download command.')]
+            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
         $YoutubeDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --yes-playlist",
         
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the youtube-dlp and ffmpeg executable files.')]
+            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
         $ExecutablePath
     )
@@ -767,7 +767,7 @@ function Get-AudioPlaylist {
     }
     $PlaylistUrls = Get-Playlist $GetPlaylistOptions
     
-    # Ensure that the '$YoutubeDlOptions parameter contains the '--yes-playlist' youtube-dlp option.
+    # Ensure that the '$YoutubeDlOptions parameter contains the '--yes-playlist' yt-dlp option.
     if ($YoutubeDlOptions -notcontains 'yes-playlist') {
         $YoutubeDlOptions = $YoutubeDlOptions + ' --yes-playlist'
     }
