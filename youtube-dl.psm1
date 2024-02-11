@@ -414,15 +414,11 @@ function Install-Script {
 # Function for uninstalling the powershell-yt-dlp script files and directories.
 function Uninstall-Script {
     param (
-        [Parameter(
-            Mandatory = $true,
-            HelpMessage = 'The directory where the ''powershell-yt-dlp'' script and executables are currently installed to.')]
+        [Parameter(Mandatory = $true, HelpMessage = 'The directory where the ''powershell-yt-dlp'' script and executables are currently installed to.')]
         [string]
         $Path,
 
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Whether to remove all files that reside in the ''powershell-yt-dlp'' install directory.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Whether to remove all files that reside in the ''powershell-yt-dlp'' install directory.')]
         [switch]
         $Force = $false
     )
@@ -492,53 +488,43 @@ function Uninstall-Script {
 
 function Get-Video {
     param (
-        [Parameter(
-            Mandatory = $true,
-            HelpMessage = 'The URL of the video to download.')]
+        [Parameter(Mandatory = $true, HelpMessage = 'The URL of the video to download.')]
         [string]
         $Url,
 
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Download the video to this directory.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $Path = (Get-Location),
+        $YtDlOptions = "--output './%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '.\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
 
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
-        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
-
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
-        [string]
-        $ExecutablePath
+        $ExecutablePath = ''
     )
 
-    if (Test-Path -Path $Path) {
-        $Path = Resolve-Path -Path $Path
-    }
-    $Url = "'$($Url.Trim())'"
+    $Url = $Url.Trim()
     $YtDlOptions = $YtDlOptions.Trim()
+    $ExecutablePath = $ExecutablePath.Trim()
     
     if ($ExecutablePath.Length -gt 0) {
-        $ExecutablePath = $ExecutablePath.Trim()
-        $DownloadCommand = "$ExecutablePath\yt-dlp $YtDlOptions $Url"
+        # Check if the provided '-ExecutablePath' parameter is a valid directory.
+        if (Test-Path -Path $ExecutablePath -PathType 'Container') {
+            $ExecutablePath = "$(Resolve-Path -Path $ExecutablePath)\yt-dlp.exe"
+        }
+        else {
+            return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Provided executable directory path either does not exist or is not a directory.'
+        }
+
+        if (Test-Path -Path "$ExecutablePath\yt-dlp.exe") {
+            $ExecutablePath = Resolve-Path -Path "$ExecutablePath\yt-dlp.exe"
+        }
     } else {
-        $DownloadCommand = "yt-dlp $YtDlOptions $Url"
-    }
+        $ExecutablePath = "yt-dlp"
 
-    # Check if the provided '-Path' parameter is a valid directory.
-    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Provided path either does not exist or is not a directory.'
-    }
-
-    # Check whether the 'yt-dlp' command is in the system's PATH variable
-    if ($null -eq (Get-Command "yt-dlp" -ErrorAction SilentlyContinue)) 
-    { 
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'yt-dlp' in the system PATH variable."
+        # Check whether the 'yt-dlp' command is in the system's PATH variable
+        if ($null -eq (Get-Command "yt-dlp" -ErrorAction SilentlyContinue)) 
+        { 
+            return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'yt-dlp' in the system PATH variable."
+        }
     }
 
     # Check whether the 'ffmpeg' command is in the system's PATH variable
@@ -547,81 +533,19 @@ function Get-Video {
         return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'ffmpeg' in the system PATH variable."
     }
 
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL $Url to '$Path' using yt-dlp options of '$YtDlOptions'."
-    Invoke-Expression $DownloadCommand
+    # Download the video.
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL '$Url' using yt-dlp options of '$YtDlOptions'."
+    Invoke-Expression "$ExecutablePath $YtDlOptions '$Url'"
 } # End Get-Video function
 
 
 
-function Get-Audio {
-    param (
-        [Parameter(
-            Mandatory = $true,
-            HelpMessage = 'The URL of the video to download audio from.')]
-        [string]
-        $Url,
-
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Download the video''s audio to this directory.')]
-        [string]
-        $Path = (Get-Location),
-
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
-        [string]
-        $YtDlOptions = "-o ""$Path\%(title)s.%(ext)s"" --console-title --ignore-errors --cache-dir ""$Path"" --no-mtime --no-playlist",
-
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
-        [string]
-        $ExecutablePath
-    )
-
-    if (Test-Path -Path $Path) {
-        $Path = Resolve-Path -Path $Path
-    }
-    $Url = "'$($Url.Trim())'"
-    $YtDlOptions = $YtDlOptions.Trim()
-
-    if ($ExecutablePath.Length -gt 0) {
-        $ExecutablePath = $ExecutablePath.Trim()
-        $DownloadCommand = "$ExecutablePath\yt-dlp $YtDlOptions $Url"
-    } else {
-        $DownloadCommand = "yt-dlp $YtDlOptions $Url"
-    }
-
-    # Check if the provided '-Path' parameter is a valid directory.
-    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Provided path either does not exist or is not a directory.'
-    }
-
-    # Check whether the 'yt-dlp' command is in the system's PATH variable
-    if ($null -eq (Get-Command "yt-dlp" -ErrorAction SilentlyContinue)) 
-    { 
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'yt-dlp' in the system PATH variable."
-    }
-
-    # Check whether the 'ffmpeg' command is in the system's PATH variable
-    if ($null -eq (Get-Command "ffmpeg" -ErrorAction SilentlyContinue)) 
-    { 
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to find 'ffmpeg' in the system PATH variable."
-    }
-
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio from URL of $Url to '$Path' using yt-dlp options of '$YtDlOptions'."
-    Invoke-Expression $DownloadCommand
-} # End Get-Audio function
-
-
-
 # Function for retrieving an array of Yt playlist URLs.
-function Get-Playlist {
+function Get-VideoList {
     param (
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'Path to the file containing a list of playlist URLs to download.')]
+            HelpMessage = 'Path to the file containing a list of video URLs to download.')]
         [string]
         $Path,
 
@@ -654,7 +578,7 @@ function Get-Playlist {
     # Return an array of playlist URL string objects.
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Returning $($UrlList.Length) playlist URLs."
     return $UrlList
-} # End Get-Playlist function
+} # End Get-VideoList function
 
 
 
