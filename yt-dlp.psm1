@@ -674,28 +674,69 @@ Function Test-YtDlpVideo {
     $ErrorActionPreference = "Stop"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video."
     Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing downloaded video."
-    Remove-Item -Include "test-video.*"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path "test-video.*").Name), Length: $((Get-ChildItem -Path "test-video.*").Length), LastWriteTime: $((Get-ChildItem -Path "test-video.*").LastWriteTime)"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing '$((Get-ChildItem -Path "test-video.*").Name)'."
+    Get-ChildItem -Path "test-video.*" | Remove-Item
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
 
 
-Function Test-YtDlpVideoAudio {
+Function Test-YtDlpAudio {
     $ErrorActionPreference = "Stop"
-    
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio."
+    Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-audio.%(ext)s' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path "test-audio.*").Name), Length: $((Get-ChildItem -Path "test-audio.*").Length), LastWriteTime: $((Get-ChildItem -Path "test-audio.*").LastWriteTime)"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing '$((Get-ChildItem -Path "test-audio.*").Name)'."
+    Get-ChildItem -Path "test-audio.*" | Remove-Item
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
 
 
 Function Test-YtDlpVideoArchive {
     $ErrorActionPreference = "Stop"
-    
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video with '--download-archive' option enabled."
+    Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --download-archive test-yt-dlp-archive.txt --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path "test-video.*").Name), Length: $((Get-ChildItem -Path "test-video.*").Length), LastWriteTime: $((Get-ChildItem -Path "test-video.*").LastWriteTime)"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path 'test-yt-dlp-archive.txt').Name), Length: $((Get-ChildItem -Path 'test-yt-dlp-archive.txt').Length), LastWriteTime: $((Get-ChildItem -Path 'test-yt-dlp-archive.txt').LastWriteTime)"    
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Contents of 'test-yt-dlp-archive.txt': $(Get-Content 'test-yt-dlp-archive.txt')"    
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing '$((Get-ChildItem -Path "test-video.*").Name)'."
+    Get-ChildItem -Path "test-video.*" | Remove-Item
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video with '--download-archive' option enabled a second time."
+    Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --download-archive test-yt-dlp-archive.txt --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    if (Test-Path -Path "test-video.*") {
+		return Write-Log -ConsoleOnly -Severity 'Error' -Message "The video '$((Get-ChildItem -Path "test-video.*").Name)' was re-downloaded despite having the '--download-archive' option set."
+	}
+    else {
+        Write-Log -ConsoleOnly -Severity 'Info' -Message "The video was not re-downloaded due to the '--download-archive' option being set."
+    }
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing 'test-yt-dlp-archive.txt'."
+    Remove-Item -Path 'test-yt-dlp-archive.txt'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
 
 
 Function Test-YtDlpVideoList {
     $ErrorActionPreference = "Stop"
-    
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Creating video list file 'test-yt-dlp-video-list.txt'."
+    "https://www.youtube.com/watch?v=C0DPdy98e4c
+https://www.youtube.com/watch?v=QC8iQqtG0hg" | Out-File -FilePath 'test-yt-dlp-video-list.txt'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading videos from video list file 'test-yt-dlp-video-list.txt'."
+    $UrlList = Get-VideoList -Path 'test-yt-dlp-video-list.txt' 
+    $Counter = 1
+    foreach ($Item in $UrlList) {
+        Get-Video -Url "$Item" -YtDlpOptions "--output 'test-video-$Counter.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+        $Counter++
+    }
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded the following videos:"
+    foreach ($Item in (Get-ChildItem -Path "test-video-*")) {
+        Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path $Item).Name), Length: $((Get-ChildItem -Path $Item).Length), LastWriteTime: $((Get-ChildItem -Path $Item).LastWriteTime)"
+    }
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing the downloaded videos."
+    Get-ChildItem -Path "test-video-*" | Remove-Item
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing the video list file 'test-yt-dlp-video-list.txt'."
+    Remove-Item -Path 'test-yt-dlp-video-list.txt'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
