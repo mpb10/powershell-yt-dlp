@@ -72,11 +72,11 @@ function Write-Log {
 
     # Set the severity level formatting based on the user input.
     $SeverityLevel = switch ($Severity) {
-        'Info' { 'INFO:   '; break }
+        'Info'    { 'INFO:   '; break }
         'Warning' { 'WARNING:'; break }
-        'Error' { 'ERROR:  '; break }
-        'Prompt' { 'PROMPT: '; break }
-        default { 'INFO:   '; break }
+        'Error'   { 'ERROR:  '; break }
+        'Prompt'  { 'PROMPT: '; break }
+        default   { 'INFO:   '; break }
     }
 
     # Return the user provided value if the $Severity is 'Prompt'
@@ -195,20 +195,28 @@ function Get-Download {
 # Function for downloading the yt-dlp.exe executable file.
 function Get-YtDlp {
     param(
-        [Parameter(Mandatory = $false, HelpMessage = 'Download yt-dlp.exe to this path.')]
+        [Parameter(Mandatory = $true, HelpMessage = 'Download yt-dlp.exe to this directory.')]
         [string]
-        $Path = "$(Get-Location)\yt-dlp.exe"
+        $Path
     )
 
-    # Use the 'Get-Download' function to download the yt-dlp.exe executable file.
-    Get-Download -Url 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -Path $Path
-
-    # Check if the download was successful.
-    if (Test-Path -Path $Path) {
-        Write-Log -ConsoleOnly -Severity 'Info' -Message "Finished downloading the yt-dlp executable to '$Path'."
+    # Check if the provided '-Path' parameter is a valid directory.
+    if (Test-Path -Path $Path -PathType 'Container') {
+        $Path = Resolve-Path -Path $Path
     }
     else {
-        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download the yt-dlp executable to '$Path'."
+        return Write-Log -ConsoleOnly -Severity 'Error' -Message 'Provided download path either does not exist or is not a directory.'
+    }
+
+    # Use the 'Get-Download' function to download the yt-dlp.exe executable file.
+    Get-Download -Url 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -Path "$Path\yt-dlp.exe"
+
+    # Check if the download was successful.
+    if (Test-Path -Path "$Path\yt-dlp.exe") {
+        Write-Log -ConsoleOnly -Severity 'Info' -Message "Finished downloading the yt-dlp executable to '$Path\yt-dlp.exe'."
+    }
+    else {
+        return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download the yt-dlp executable to '$Path\yt-dlp.exe'."
     }
 } # End Get-YtDlp function
 
@@ -217,9 +225,9 @@ function Get-YtDlp {
 # Function for downloading the ffmpeg executable files.
 function Get-Ffmpeg {
     param (
-        [Parameter(Mandatory = $false, HelpMessage = 'Download ffmpeg executables to this directory.')]
+        [Parameter(Mandatory = $true, HelpMessage = 'Download ffmpeg executables to this directory.')]
         [string]
-        $Path = (Get-Location)
+        $Path
     )
 
     # Check if the provided '-Path' parameter is a valid directory.
@@ -254,9 +262,9 @@ function Get-Ffmpeg {
 
 
 # Function for downloading and installing powershell-yt-dlp script files and executables.
-function Install-Script {
+function Install-YtDlpScript {
     param (
-        [Parameter(Mandatory = $true, HelpMessage = 'The directory to install the ''powershell-yt-dlp'' script and executables to.')]
+        [Parameter(Mandatory = $true, HelpMessage = 'The directory to install the ''powershell-yt-dlp'' script and other files to.')]
         [string]
         $Path,
 
@@ -301,7 +309,7 @@ function Install-Script {
 	if ((Test-Path "$Path\bin\yt-dlp.exe") -eq $False) {
 		Write-Log -ConsoleOnly -Severity 'Warning' -Message "The yt-dlp executable was not found at '$Path\bin\yt-dlp.exe'."
 
-		Get-YtDlp -Path "$Path\bin\yt-dlp.exe"
+		Get-YtDlp -Path "$Path\bin"
 	}
 
 	# Ensure that 'ffmpeg' is installed.
@@ -407,12 +415,14 @@ function Install-Script {
             New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
         }
     }
-} # End Install-Script function
+
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Finished installing 'powershell-yt-dlp' to '$Path'."
+} # End Install-YtDlpScript function
 
 
 
 # Function for uninstalling the powershell-yt-dlp script files and directories.
-function Uninstall-Script {
+function Uninstall-YtDlpScript {
     param (
         [Parameter(Mandatory = $true, HelpMessage = 'The directory where the ''powershell-yt-dlp'' script and executables are currently installed to.')]
         [string]
@@ -482,7 +492,7 @@ function Uninstall-Script {
     }
 
     Write-Log -ConsoleOnly -Severity 'Info' -Message 'Finished uninstalling ''powershell-yt-dlp''.'
-} # End Uninstall-Script function
+} # End Uninstall-YtDlpScript function
 
 
 
@@ -494,7 +504,7 @@ function Get-Video {
 
         [Parameter(Mandatory = $false, HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YtDlOptions = "--output './%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '.\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
+        $YtDlpOptions = "--output './%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '.\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
 
         [Parameter(Mandatory = $false, HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
@@ -502,7 +512,7 @@ function Get-Video {
     )
 
     $Url = $Url.Trim()
-    $YtDlOptions = $YtDlOptions.Trim()
+    $YtDlpOptions = $YtDlpOptions.Trim()
     $ExecutablePath = $ExecutablePath.Trim()
     
     if ($ExecutablePath.Length -gt 0) {
@@ -534,8 +544,9 @@ function Get-Video {
     }
 
     # Download the video.
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL '$Url' using yt-dlp options of '$YtDlOptions'."
-    Invoke-Expression "$ExecutablePath $YtDlOptions '$Url'"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL '$Url' using yt-dlp options of '$YtDlpOptions'."
+    Invoke-Expression "$ExecutablePath $YtDlpOptions '$Url'"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Finished downloading video from URL '$Url'."
 } # End Get-Video function
 
 
@@ -606,20 +617,60 @@ Function Get-SettingsMenu {
 
 
 
-Function Test-YtDlpInstall {
+Function Test-GetYtDlpFfmpeg {
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading yt-dlp to '$Path\yt-dlp.exe'."
+    Get-YtDlp -Path $Path
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading ffmpeg to '$Path'."
+    Get-Ffmpeg -Path $Path
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing downloaded executables."
+    Remove-Item -Path "$Path\yt-dlp.exe"
+    Remove-Item -Path "$Path\ffmpeg.exe"
+    Remove-Item -Path "$Path\ffplay.exe"
+    Remove-Item -Path "$Path\ffprobe.exe"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
+}
 
+
+
+Function Test-YtDlpInstall {
+    param (
+        [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
+        [string]
+        $Branch = '0.1.0'
+    )
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Installing 'powershell-yt-dlp' from branch '$Branch' to '$Path'."
+    Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut $true -DesktopShortcut $true -StartMenuShortcut $true
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
 
 
 Function Test-YtDlpUninstall {
-    
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Uninstalling 'powershell-yt-dlp' from '$Path'."
+    Uninstall-YtDlpScript -Path $Path
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
+}
+
+
+
+Function Test-YtDlpUninstallForce {
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Uninstalling 'powershell-yt-dlp' from '$Path' with the '-Force' option."
+    Uninstall-YtDlpScript -Path $Path -Force $true
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
 
 
 Function Test-YtDlpVideo {
-    
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video."
+    Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing downloaded video."
+    Remove-Item -Include "test-video.*"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
 
