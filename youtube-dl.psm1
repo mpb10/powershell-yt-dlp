@@ -650,7 +650,7 @@ Function Test-YtDlpInstall {
 		New-Item -Type 'Directory' -Path $Path | Out-Null
 	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Installing 'powershell-yt-dlp' from branch '$Branch' to '$Path'."
-    Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut $true -DesktopShortcut $true -StartMenuShortcut $true
+    Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut -DesktopShortcut -StartMenuShortcut
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
