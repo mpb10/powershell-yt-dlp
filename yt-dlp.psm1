@@ -447,23 +447,11 @@ function Uninstall-YtDlpScript {
         "$Path\LICENSE",
         "$Path\powershell-yt-dlp.lnk",
         "$DesktopPath\powershell-yt-dlp.lnk",
-        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk",
-        "$Path\var\cache\*.*"
+        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk"
     )
     foreach ($Item in $FileList) {
         try { 
             Remove-Item -Path $Item -ErrorAction Stop
-        } catch [System.Management.Automation.ItemNotFoundException] {
-            Write-Log -ConsoleOnly -Severity 'Warning' -Message "$_"
-        } catch {
-            return Write-Log -ConsoleOnly -Severity 'Error' -Message "$_"
-        }
-    }
-
-    # Remove the '$Path\var\cache\' directory.
-    if (Test-Path -Path "$Path\var\cache") {
-        try { 
-            Remove-Item -Path "$Path\var\cache" -Recurse -Force -ErrorAction Stop
         } catch [System.Management.Automation.ItemNotFoundException] {
             Write-Log -ConsoleOnly -Severity 'Warning' -Message "$_"
         } catch {
@@ -676,7 +664,7 @@ Function Test-YtDlpUninstallForce {
 		New-Item -Type 'Directory' -Path $Path | Out-Null
 	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Uninstalling 'powershell-yt-dlp' from '$Path' with the '-Force' option."
-    Uninstall-YtDlpScript -Path $Path -Force $true
+    Uninstall-YtDlpScript -Path $Path -Force
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
