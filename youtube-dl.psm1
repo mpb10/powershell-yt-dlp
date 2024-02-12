@@ -12,7 +12,7 @@
 .NOTES 
 	Requires Windows 7 or higher and PowerShell 5.0 or greater
 	Author: mpb10
-	Updated: April 27th 2021
+	Updated: February 12th, 2024
 	Version: 0.1.0
 
 .LINK 
@@ -617,17 +617,22 @@ Function Get-SettingsMenu {
 
 
 
-Function Test-GetYtDlpFfmpeg {
-    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+Function Test-GetYtDlpExecutables {
+    $ErrorActionPreference = "Stop"
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
+    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
+		New-Item -Type 'Directory' -Path $Path | Out-Null
+	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading yt-dlp to '$Path\yt-dlp.exe'."
     Get-YtDlp -Path $Path
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading ffmpeg to '$Path'."
     Get-Ffmpeg -Path $Path
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing downloaded executables."
-    Remove-Item -Path "$Path\yt-dlp.exe"
-    Remove-Item -Path "$Path\ffmpeg.exe"
-    Remove-Item -Path "$Path\ffplay.exe"
-    Remove-Item -Path "$Path\ffprobe.exe"
+    Remove-Item -Path "$Path\yt-dlp.exe" -ErrorAction Stop
+    Remove-Item -Path "$Path\ffmpeg.exe" -ErrorAction Stop
+    Remove-Item -Path "$Path\ffplay.exe" -ErrorAction Stop
+    Remove-Item -Path "$Path\ffprobe.exe" -ErrorAction Stop
+    Remove-Item -Path $Path -ErrorAction Stop
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
@@ -635,11 +640,15 @@ Function Test-GetYtDlpFfmpeg {
 
 Function Test-YtDlpInstall {
     param (
-        [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
+        [Parameter(Mandatory = $true, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
         [string]
-        $Branch = '0.1.0'
+        $Branch
     )
-    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+    $ErrorActionPreference = "Stop"
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
+    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
+		New-Item -Type 'Directory' -Path $Path | Out-Null
+	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Installing 'powershell-yt-dlp' from branch '$Branch' to '$Path'."
     Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut $true -DesktopShortcut $true -StartMenuShortcut $true
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
@@ -648,7 +657,11 @@ Function Test-YtDlpInstall {
 
 
 Function Test-YtDlpUninstall {
-    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+    $ErrorActionPreference = "Stop"
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
+    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
+		New-Item -Type 'Directory' -Path $Path | Out-Null
+	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Uninstalling 'powershell-yt-dlp' from '$Path'."
     Uninstall-YtDlpScript -Path $Path
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
@@ -657,7 +670,11 @@ Function Test-YtDlpUninstall {
 
 
 Function Test-YtDlpUninstallForce {
-    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-youtube-dl\tests'
+    $ErrorActionPreference = "Stop"
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
+    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
+		New-Item -Type 'Directory' -Path $Path | Out-Null
+	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Uninstalling 'powershell-yt-dlp' from '$Path' with the '-Force' option."
     Uninstall-YtDlpScript -Path $Path -Force $true
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
@@ -666,6 +683,7 @@ Function Test-YtDlpUninstallForce {
 
 
 Function Test-YtDlpVideo {
+    $ErrorActionPreference = "Stop"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video."
     Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing downloaded video."
@@ -676,17 +694,20 @@ Function Test-YtDlpVideo {
 
 
 Function Test-YtDlpVideoAudio {
+    $ErrorActionPreference = "Stop"
     
 }
 
 
 
 Function Test-YtDlpVideoArchive {
+    $ErrorActionPreference = "Stop"
     
 }
 
 
 
 Function Test-YtDlpVideoList {
+    $ErrorActionPreference = "Stop"
     
 }
