@@ -24,9 +24,9 @@
 # Function for simulating the 'pause' command of the Windows command line.
 function Wait-Script {
     param(
-        [Parameter(Mandatory = $false, HelpMessage = 'If true, do not wait for user input.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'If true, wait for user input.')]
         [switch]
-        $NonInteractive = $false,
+        $Interactive = $false,
         
         [Parameter(Mandatory = $false, HelpMessage = 'Number of seconds to wait.')]
         [int]
@@ -37,9 +37,8 @@ function Wait-Script {
     Start-Sleep -Seconds $Seconds
 
     # If the '-NonInteractive' parameter is false, wait for the user to press a key before continuing.
-    if ($NonInteractive -eq $false) {
-		Write-Host "Press any key to continue ...`n" -ForegroundColor "Gray"
-	    $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp") | Out-Null
+    if ($Interactive -eq $true) {
+		$null = Read-Host "Press ENTER to continue..."
 	}
 } # End Wait-Script function
 
@@ -581,8 +580,48 @@ function Get-VideoList {
 
 
 
-Function Get-MainMenu {
-
+Function Get-YtDlpMainMenu {
+    $MenuOption = $null
+    While ($MenuOption -notin @(1, 2, 3, 0)) {
+		Clear-Host
+		Write-Host "================================================================================"
+		Write-Host "                             powershell-yt-dlp" -ForegroundColor "Yellow"
+		Write-Host "================================================================================"
+		Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
+		Write-Host "  1 - Download video
+  2 - Download audio
+  3 - Update executables, open documentation, uninstall script, etc.
+  `n  0 - Exit`n"
+        $MenuOption = Read-Host "Option"
+		Write-Host ""
+		
+		Switch ($MenuOption.Trim()) {
+			1 {
+				# Call the download menu with the default video settings configured.
+				$null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+			}
+			2 {
+				# Call the download menu with the default audio settings configured.
+				$null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+			}
+			3 {
+				# Call the miscellaneous menu.
+				Get-YtDlpSettingsMenu
+                $MenuOption = $null
+			}
+			0 {
+				# Exit the script.
+				break
+			}
+			Default {
+				# Ensure that a valid option is provided to the main menu.
+				Write-Host "`nPlease enter a valid option.`n" -ForegroundColor "Red"
+				$null = Read-Host "Press ENTER to continue..."
+			}
+		} # End Switch statement
+	} # End While loop
 }
 
 
@@ -593,34 +632,120 @@ Function Get-DownloadMenu {
 
 
 
-Function Get-SettingsMenu {
+Function Get-YtDlpSettingsMenu {
+    param (
+        [Parameter(Mandatory = $false, HelpMessage = 'The directory where the ''powershell-yt-dlp'' script is to be installed to.')]
+        [string]
+        $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp',
 
+        [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
+        [string]
+        $Branch = 'master'
+    )
+
+    $MenuOption = $null
+	While ($MenuOption -notin @(1, 2, 3, 4, 5, 6, 7, 8, 0)) {
+		Clear-Host
+		Write-Host "================================================================================"
+		Write-Host "                             Miscellaneous Options" -ForegroundColor "Yellow"
+		Write-Host "================================================================================"
+		Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
+		Write-Host "  1 - Update the 'yt-dlp.exe' executable
+  2 - Update the ffmpeg executables
+  3 - Create a desktop shortcut
+  4 - Open powershell-yt-dlp documentation
+  5 - Open yt-dlp documentation
+  6 - Open ffmpeg documentation
+  7 - Install/update powershell-yt-dlp
+  8 - Uninstall powershell-yt-dlp
+`n  0 - Cancel`n"
+        $MenuOption = Read-Host "Option"
+		Write-Host ""
+		
+		Switch ($MenuOption.Trim()) {
+			1 {
+				# Re-download the yt-dlp.exe executable file.
+				Get-YtDlp -Path ($Path + '\bin')
+				$null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+			}
+			2 {
+				# Re-download the ffmpeg executable files.
+				Get-Ffmpeg -Path ($Path + '\bin')
+				$null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+			}
+			3 {
+				# Create the desktop shortcut for the script.
+                $DesktopPath = [environment]::GetFolderPath('Desktop')
+				New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+				$null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+			}
+			4 {
+				# Open the link to the powershell-yt-dlp documentation for the provided branch version.
+				Start-Process "https://github.com/mpb10/powershell-yt-dlp/blob/$Branch/README.md"
+				$MenuOption = $null
+			}
+			5 {
+				# Open the link to the yt-dlp documentation.
+				Start-Process "https://github.com/yt-dlp/yt-dlp/blob/master/README.md"
+				$MenuOption = $null
+			}
+			6 {
+				# Open the link to the ffmpeg documentation.
+				Start-Process "https://www.ffmpeg.org/ffmpeg.html"
+				$MenuOption = $null
+			}
+			7 {
+				# Install the script and its shortcuts.
+				Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut -DesktopShortcut -StartMenuShortcut
+				$null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+			}
+			8 {
+				# Uninstall the script and its shortcuts.
+				Uninstall-YtDlpScript -Path $Path
+				$null = Read-Host "Press ENTER to continue..."
+				Exit
+			}
+			0 {
+				# Return to the main menu.
+				Clear-Host
+				break
+			}
+			Default {
+				# Ensure that a valid option is provided to the menu.
+				Write-Host "Please enter a valid option.`n" -ForegroundColor "Red"
+				$null = Read-Host "Press ENTER to continue..."
+			}
+		} # End Switch statement
+	} # End While loop
 }
 
 
 
-# ################################
+# ################################################################################################
 # Testing functions
-# ################################
+# ################################################################################################
 
 
 
 Function Test-GetYtDlpExecutables {
     $ErrorActionPreference = "Stop"
-    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
+    $Path = Get-Location
     if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
 		New-Item -Type 'Directory' -Path $Path | Out-Null
 	}
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading yt-dlp to '$Path\yt-dlp.exe'."
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading yt-dlp to '.\yt-dlp.exe'."
     Get-YtDlp -Path $Path
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading ffmpeg to '$Path'."
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading ffmpeg to '.\'."
     Get-Ffmpeg -Path $Path
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing downloaded executables."
     Remove-Item -Path "$Path\yt-dlp.exe" -ErrorAction Stop
     Remove-Item -Path "$Path\ffmpeg.exe" -ErrorAction Stop
     Remove-Item -Path "$Path\ffplay.exe" -ErrorAction Stop
     Remove-Item -Path "$Path\ffprobe.exe" -ErrorAction Stop
-    Remove-Item -Path $Path -ErrorAction Stop
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
 }
 
@@ -647,9 +772,6 @@ Function Test-YtDlpInstall {
 Function Test-YtDlpUninstall {
     $ErrorActionPreference = "Stop"
     $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
-    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path $Path | Out-Null
-	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Uninstalling 'powershell-yt-dlp' from '$Path'."
     Uninstall-YtDlpScript -Path $Path
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
@@ -660,9 +782,6 @@ Function Test-YtDlpUninstall {
 Function Test-YtDlpUninstallForce {
     $ErrorActionPreference = "Stop"
     $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
-    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path $Path | Out-Null
-	}
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Uninstalling 'powershell-yt-dlp' from '$Path' with the '-Force' option."
     Uninstall-YtDlpScript -Path $Path -Force
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
@@ -739,4 +858,25 @@ https://www.youtube.com/watch?v=QC8iQqtG0hg" | Out-File -FilePath 'test-yt-dlp-v
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing the video list file 'test-yt-dlp-video-list.txt'."
     Remove-Item -Path 'test-yt-dlp-video-list.txt'
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
+}
+
+
+
+Function Test-YtDlpAll {
+    param (
+        [Parameter(Mandatory = $true, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
+        [string]
+        $Branch
+    )
+    $ErrorActionPreference = "Stop"
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
+    Test-YtDlpInstall -Branch $Branch
+    Set-Location -Path $Path
+    Test-GetYtDlpExecutables
+    Test-YtDlpVideo
+    Test-YtDlpAudio
+    Test-YtDlpVideoArchive
+    Test-YtDlpVideoList
+    Set-Location -Path $(Split-Path -Path $Path -Parent)
+    Test-YtDlpUninstall
 }
