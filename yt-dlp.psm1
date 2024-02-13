@@ -533,7 +533,6 @@ function Get-Video {
     # Download the video.
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video from URL '$Url' using yt-dlp options of '$YtDlpOptions'."
     Invoke-Expression "$ExecutablePath $YtDlpOptions '$Url'"
-    Write-Log -ConsoleOnly -Severity 'Info' -Message "Finished downloading video from URL '$Url'."
 } # End Get-Video function
 
 
@@ -592,18 +591,18 @@ Function Get-YtDlpMainMenu {
   2 - Download audio
   3 - Update executables, open documentation, uninstall script, etc.
   `n  0 - Exit`n"
-        $MenuOption = Read-Host "Option"
+        $MenuOption = (Read-Host "Option").Trim()
 		Write-Host ""
 		
-		Switch ($MenuOption.Trim()) {
+		Switch ($MenuOption) {
 			1 {
 				# Call the download menu with the default video settings configured.
-				$null = Read-Host "Press ENTER to continue..."
+				Get-YtDownloadMenu -Type video -Path ([environment]::GetFolderPath('MyVideos'))
                 $MenuOption = $null
 			}
 			2 {
 				# Call the download menu with the default audio settings configured.
-				$null = Read-Host "Press ENTER to continue..."
+				Get-YtDownloadMenu -Type audio -Path ([environment]::GetFolderPath('MyMusic'))
                 $MenuOption = $null
 			}
 			3 {
@@ -626,9 +625,166 @@ Function Get-YtDlpMainMenu {
 
 
 
-Function Get-DownloadMenu {
+Function Get-YtDownloadMenu {
+    param (
+        [Parameter(Mandatory = $true, HelpMessage = 'Whether to download video or audio.')]
+		[ValidateSet('video','audio')]
+        [string]
+        $Type,
 
-}
+        [Parameter(Mandatory = $false, HelpMessage = 'The URL of the video to download.')]
+        [object]
+        $Url = 'none',
+
+        [Parameter(Mandatory = $false, HelpMessage = 'The directory to download the video/audio to.')]
+        [string]
+        $Path = (Get-Location),
+
+        [Parameter(Mandatory = $false, HelpMessage = 'The path to the URL list file to download URLs from.')]
+        [string]
+        $VideoUrlListPath = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\' + $Type + '-url-list.txt',
+
+        [Parameter(Mandatory = $false, HelpMessage = 'yt-dlp options to use when downloading the video/audio.')]
+        [string]
+        $YtDlpOptions = $null
+    )
+	$MenuOption = $null
+	While ($MenuOption -notin @(1, 2, 3, 4, 5, 6, 0)) {
+		Clear-Host
+		Write-Host "================================================================================"
+		Write-Host "                                 Download $Type" -ForegroundColor "Yellow"
+		Write-Host "================================================================================"
+		Write-Host "`nURL:                $($Url -join "`n                    ")"
+		Write-Host "Output path:        $Path"
+		Write-Host "yt-dlp options: $YtDlpOptions"
+		Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
+		Write-Host "  1 - Download $Type"
+		Write-Host "  2 - Configure URL"
+		Write-Host "  3 - Configure yt-dlp options"
+		Write-Host "  4 - Configure format to download"
+		Write-Host "  5 - Get playlist URLs from file"
+		Write-Host "`n  0 - Cancel`n"
+		$MenuOption = (Read-Host 'Option').Trim()
+		Write-Host ""
+		
+		Switch ($MenuOption) {
+			1 {
+				# If the URL value is an array of URLs, download each one.
+				# If the URL value is not an array, download the single URL.
+				if ($Url -is [array]) {
+					foreach ($Item in $Url) {
+						# Call the video download function for each URL in the array.
+						Get-Video -Url $Item -YtDlpOptions $YtDlpOptions
+
+						# If the URL was successfully downloaded, notified the user.
+						# If the URL was not successfully downloaded, break out of the loop immediately.
+						if ($LastExitCode -eq 0) {
+							Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded $Type from '$Item' successfully.`n"
+						} else {
+                            Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download $Type from '$Item'.`n"
+                            $null = Read-Host "Press ENTER to continue..."
+							$MenuOption = $null
+							break
+						} # End if ($LastExitCode -eq 0) statement
+					} # End foreach loop
+				} else {
+					# Call the video download function.
+					Get-Video -Url $Url -YtDlpOptions $YtDlpOptions
+
+					# If the URL was successfully downloaded, notify the user.
+					# If the URL was not successfully downloaded, return to the download menu.
+					if ($LastExitCode -eq 0) {
+						Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded $Type from '$Url' successfully.`n"
+					} else {
+                        Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download $Type from '$Url'.`n"
+						$null = Read-Host "Press ENTER to continue..."
+						$MenuOption = $null
+                        break
+					} # End if ($LastExitCode -eq 0) statement
+				} # End if ($Url -isnot [string] -and $Url -is [array]) statement
+                $null = Read-Host "Press ENTER to continue..."
+			}
+			2 {
+				# Prompt the user for the URL to download.
+				$Url = (Read-Host 'URL').Trim()
+				$MenuOption = $null
+			}
+			3 {
+				# Prompt the user for the yt-dlp options
+				$YtDlpOptions = (Read-Host 'yt-dlp options').Trim()
+				$MenuOption = $null
+			}
+			4 {
+				# If the URL is a single item (a string), get the formats available for download.
+				if ($Url -is [string] -and $Url -isnot [array] -and $Url.Length -gt 0) {
+					# Save the list of available download formats to a variable.
+					$TestUrlValidity = Invoke-Expression "yt-dlp -F '$Url'"
+
+					# If the 'yt-dlp -F $URL' command failed, display the output that it failed with.
+					# If the 'yt-dlp -F $URL' command succeeded, display the formats that are available for download and prompt the user.
+					if ($LastExitCode -ne 0) {
+						Write-Host "$TestUrlValidity" -ForegroundColor "Red"
+						$null = Read-Host "Press ENTER to continue..."
+					} else {
+						$AvailableFormats = Invoke-Expression "yt-dlp -F '$URL'" | Where-Object { ! $_.StartsWith('[') -and ! $_.StartsWith('format code') -and $_ -match '^[0-9]{3}' } | ForEach-Object {
+							[PSCustomObject]@{
+								'FormatCode' = $_.Substring(0, 13).Trim() -as [Int]
+								'Extension' = $_.Substring(13, 11).Trim()
+								'Resolution' = $_.Substring(24, 11).Trim()
+								'ResolutionPixels' = $_.Substring(35, 6).Trim()
+								'Codec' = $_.Substring(41, $_.Length - 41).Trim() -replace '^.*, ([.\a-zA-Z0-9]+)@.*$', '$1'
+								'Description' = $_.Substring(41, $_.Length - 41).Trim()
+							} # End [PSCustomObject]
+						} # End $AvailableFormats ForEach-Object loop
+						$AvailableFormats.GetEnumerator() | Sort-Object -Property FormatCode | Format-Table
+						Write-Host "Enter the format code that you wish to download ([Enter] to cancel).`n"
+						$FormatOption = Read-Host 'Format code'
+		
+						# Ensure that the provided format code is valid.
+						# Break out of the loop if the user provides an empty string.
+						while ($FormatOption.Trim() -notin $AvailableFormats.FormatCode -and $FormatOption.Trim() -ne '') {
+							Write-Host "`nPlease enter a valid option from the 'FormatCode' column.`n" -ForegroundColor "Red"
+							$null = Read-Host "Press ENTER to continue..."
+							$AvailableFormats.GetEnumerator() | Sort-Object -Property FormatCode | Format-Table
+							Write-Host "Enter the format code that you wish to download ([Enter] to cancel).`n"
+							$FormatOption = Read-Host 'Format code'	
+						}
+						
+						# If the user provided a valid format code, modify the yt-dlp options with that format code.
+						if ($FormatOption.Length -gt 0) {
+							if ($YtDlpOptions -clike '*-f*') {
+								$YtDlpOptions = ($YtDlpOptions + ' ') -replace '-f ([a-zA-Z0-9]+) ', "-f $FormatOption "
+							} else {
+								$YtDlpOptions = $YtDlpOptions + " -f $FormatOption"
+							}
+						} # End if ($FormatOption.Length -gt 0) statement
+					} # End if ($LastExitCode -ne 0) statement
+				} else {
+					Write-Host "Cannot display the format options for multiple URLs. Please set only one URL first.`n" -ForegroundColor "Red"
+					$null = Read-Host "Press ENTER to continue..."
+				} # End if ($Url -is [string] -and $Url -isnot [array] -and $Url.Length -gt 0) statement
+				$MenuOption = $null
+			}
+			5 {
+				# Retrieve the URL array from the URL list file.
+				$Url = Get-VideoList -Path $VideoUrlListPath
+				Write-Host ""
+				$null = Read-Host "Press ENTER to continue..."
+				$MenuOption = $null
+			}
+			0 {
+				# Return to the main menu.
+				Clear-Host
+				break
+			}
+			Default {
+				# Ensure that a valid option is provided to the download menu.
+				Write-Host "Please enter a valid option.`n" -ForegroundColor "Red"
+				$null = Read-Host "Press ENTER to continue..."
+			}
+		} # End Switch statement
+	} # End While loop
+} # End Get-DownloadMenu function
 
 
 
@@ -640,7 +796,7 @@ Function Get-YtDlpSettingsMenu {
 
         [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
         [string]
-        $Branch = 'master'
+        $Branch = '0.1.0'
     )
 
     $MenuOption = $null
@@ -659,10 +815,10 @@ Function Get-YtDlpSettingsMenu {
   7 - Install/update powershell-yt-dlp
   8 - Uninstall powershell-yt-dlp
 `n  0 - Cancel`n"
-        $MenuOption = Read-Host "Option"
+        $MenuOption = (Read-Host "Option").Trim()
 		Write-Host ""
 		
-		Switch ($MenuOption.Trim()) {
+		Switch ($MenuOption) {
 			1 {
 				# Re-download the yt-dlp.exe executable file.
 				Get-YtDlp -Path ($Path + '\bin')
@@ -793,6 +949,7 @@ Function Test-YtDlpVideo {
     $ErrorActionPreference = "Stop"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video."
     Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL 'https://www.youtube.com/watch?v=C0DPdy98e4c'."
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path "test-video.*").Name), Length: $((Get-ChildItem -Path "test-video.*").Length), LastWriteTime: $((Get-ChildItem -Path "test-video.*").LastWriteTime)"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing '$((Get-ChildItem -Path "test-video.*").Name)'."
     Get-ChildItem -Path "test-video.*" | Remove-Item
@@ -805,6 +962,7 @@ Function Test-YtDlpAudio {
     $ErrorActionPreference = "Stop"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio."
     Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-audio.%(ext)s' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL 'https://www.youtube.com/watch?v=C0DPdy98e4c'."
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path "test-audio.*").Name), Length: $((Get-ChildItem -Path "test-audio.*").Length), LastWriteTime: $((Get-ChildItem -Path "test-audio.*").LastWriteTime)"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing '$((Get-ChildItem -Path "test-audio.*").Name)'."
     Get-ChildItem -Path "test-audio.*" | Remove-Item
@@ -817,6 +975,7 @@ Function Test-YtDlpVideoArchive {
     $ErrorActionPreference = "Stop"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video with '--download-archive' option enabled."
     Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --download-archive test-yt-dlp-archive.txt --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL 'https://www.youtube.com/watch?v=C0DPdy98e4c'."
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path "test-video.*").Name), Length: $((Get-ChildItem -Path "test-video.*").Length), LastWriteTime: $((Get-ChildItem -Path "test-video.*").LastWriteTime)"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path 'test-yt-dlp-archive.txt').Name), Length: $((Get-ChildItem -Path 'test-yt-dlp-archive.txt').Length), LastWriteTime: $((Get-ChildItem -Path 'test-yt-dlp-archive.txt').LastWriteTime)"    
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Contents of 'test-yt-dlp-archive.txt': $(Get-Content 'test-yt-dlp-archive.txt')"    
@@ -824,6 +983,7 @@ Function Test-YtDlpVideoArchive {
     Get-ChildItem -Path "test-video.*" | Remove-Item
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading video with '--download-archive' option enabled a second time."
     Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --download-archive test-yt-dlp-archive.txt --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL 'https://www.youtube.com/watch?v=C0DPdy98e4c'."
     if (Test-Path -Path "test-video.*") {
 		return Write-Log -ConsoleOnly -Severity 'Error' -Message "The video '$((Get-ChildItem -Path "test-video.*").Name)' was re-downloaded despite having the '--download-archive' option set."
 	}
@@ -847,6 +1007,7 @@ https://www.youtube.com/watch?v=QC8iQqtG0hg" | Out-File -FilePath 'test-yt-dlp-v
     $Counter = 1
     foreach ($Item in $UrlList) {
         Get-Video -Url "$Item" -YtDlpOptions "--output 'test-video-$Counter.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+        Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL '$Item'."
         $Counter++
     }
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded the following videos:"
