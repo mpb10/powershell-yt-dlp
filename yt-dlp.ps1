@@ -15,7 +15,7 @@
 .NOTES 
 	Requires Windows 7 or higher and PowerShell 5.0 or greater
 	Author: mpb10
-	Updated: February 13th 2024
+	Updated: February 13th, 2024
 	Version: 1.0.0
 #>
 
