@@ -271,15 +271,15 @@ function Install-YtDlpScript {
         [string]
         $Branch = 'master',
 
-        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a local shortcut that is used to run the ''yt-dlp-gui.ps1'' script.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a local shortcut that is used to run the ''yt-dlp.ps1'' script.')]
         [switch]
         $LocalShortcut = $false,
         
-        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a desktop shortcut that is used to run the ''yt-dlp-gui.ps1'' script.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a desktop shortcut that is used to run the ''yt-dlp.ps1'' script.')]
         [switch]
         $DesktopShortcut = $false,
         
-        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a start menu shortcut that is used to run the ''yt-dlp-gui.ps1'' script.')]
+        [Parameter(Mandatory = $false, HelpMessage = 'Whether to create a start menu shortcut that is used to run the ''yt-dlp.ps1'' script.')]
         [switch]
         $StartMenuShortcut = $false
     )
@@ -319,10 +319,10 @@ function Install-YtDlpScript {
 	}
 
 	# Ensure that the script files are installed.
-	if ((Test-Path -Path "$Path\bin\yt-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-gui.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false) {
+	if ((Test-Path -Path "$Path\bin\yt-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false) {
 		Write-Log -ConsoleOnly -Severity 'Warning' -Message "One or more of the PowerShell script files were not found in '$Path'."
 		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp.psm1" -Path "$Path\bin\yt-dlp.psm1"
-		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-gui.ps1" -Path "$Path\bin\yt-dlp-gui.ps1"
+		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp.ps1" -Path "$Path\bin\yt-dlp.ps1"
 		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
 		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"       
 	}
@@ -351,47 +351,47 @@ function Install-YtDlpScript {
 		}
 	}
 	
-	# If the '-LocalShortcut' parameter is provided, create a shortcut in the same directory as the 'yt-dlp-gui.ps1' script that is used to run it.
+	# If the '-LocalShortcut' parameter is provided, create a shortcut in the same directory as the 'yt-dlp.ps1' script that is used to run it.
     if ($LocalShortcut) {
         if ((Test-Path -Path "$Path\powershell-yt-dlp.lnk") -eq $false) {
             # Create the shortcut.
-            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
             if (Test-Path -Path "$Path\powershell-yt-dlp.lnk") {
-                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp-gui.ps1' at: '$Path\powershell-yt-dlp.lnk'"
+                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp.ps1' at: '$Path\powershell-yt-dlp.lnk'"
             }
             else {
                 return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$Path\powershell-yt-dlp.lnk'"
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp.ps1""" -StartPath "$Path\bin"
         }
     }
 
-    # If the '-DesktopShortcut' parameter is provided, create a shortcut on the desktop that is used to run the 'yt-dlp-gui.ps1' script.
+    # If the '-DesktopShortcut' parameter is provided, create a shortcut on the desktop that is used to run the 'yt-dlp.ps1' script.
     if ($DesktopShortcut) {
         $DesktopPath = [environment]::GetFolderPath('Desktop')
 
         if ((Test-Path -Path "$DesktopPath\powershell-yt-dlp.lnk") -eq $false) {
             # Create the shortcut.
-            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
             if (Test-Path -Path "$DesktopPath\powershell-yt-dlp.lnk") {
-                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp-gui.ps1' at: '$DesktopPath\powershell-yt-dlp.lnk'"
+                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp.ps1' at: '$DesktopPath\powershell-yt-dlp.lnk'"
             }
             else {
                 return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$DesktopPath\powershell-yt-dlp.lnk'"
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp.ps1""" -StartPath "$Path\bin"
         }
     }
 
-    # If the '-StartMenuShortcut' parameter is provided, create a start menu directory containing a shortcut used to run the 'yt-dlp-gui.ps1' script.
+    # If the '-StartMenuShortcut' parameter is provided, create a start menu directory containing a shortcut used to run the 'yt-dlp.ps1' script.
     if ($StartMenuShortcut) {
         $AppDataPath = [Environment]::GetFolderPath('ApplicationData')
 
@@ -403,18 +403,18 @@ function Install-YtDlpScript {
             }
 
             # Create the shortcut.
-            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
             if (Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk") {
-                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a start menu directory and shortcut for running 'yt-dlp-gui.ps1' at: '$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk'"
+                Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a start menu directory and shortcut for running 'yt-dlp.ps1' at: '$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk'"
             }
             else {
                 return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to create a shortcut at: '$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk'"
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp.ps1""" -StartPath "$Path\bin"
         }
     }
 
@@ -444,7 +444,7 @@ function Uninstall-YtDlpScript {
         "$Path\bin\ffplay.exe",
         "$Path\bin\ffprobe.exe",
         "$Path\bin\yt-dlp.psm1",
-        "$Path\bin\yt-dlp-gui.ps1",
+        "$Path\bin\yt-dlp.ps1",
         "$Path\README.md",
         "$Path\LICENSE",
         "$Path\powershell-yt-dlp.lnk",
@@ -861,7 +861,7 @@ Function Get-YtDlpSettingsMenu {
 			3 {
 				# Create the desktop shortcut for the script.
                 $DesktopPath = [environment]::GetFolderPath('Desktop')
-				New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-gui.ps1""" -StartPath "$Path\bin"
+				New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp.ps1""" -StartPath "$Path\bin"
 				$null = Read-Host "Press ENTER to continue..."
                 $MenuOption = $null
 			}
