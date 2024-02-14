@@ -321,12 +321,15 @@ function Install-YtDlpScript {
 	# Ensure that the script files are installed.
 	if ((Test-Path -Path "$Path\bin\yt-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-gui.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false) {
 		Write-Log -ConsoleOnly -Severity 'Warning' -Message "One or more of the PowerShell script files were not found in '$Path'."
-
 		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp.psm1" -Path "$Path\bin\yt-dlp.psm1"
 		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-gui.ps1" -Path "$Path\bin\yt-dlp-gui.ps1"
 		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
-		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"        
+		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"       
 	}
+
+    if ((Test-Path -Path "$Path\etc\video-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File -Path "$Path\etc\video-url-list.txt" }
+    if ((Test-Path -Path "$Path\etc\audio-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File -Path "$Path\etc\audio-url-list.txt" }
+    if ((Test-Path -Path "$Path\var\download-archive.txt") -eq $false) { New-Item -Type File -Path "$Path\var\download-archive.txt" }
 
 	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
 	if ($ENV:PATH.Split(';') -notcontains "$Path\bin") {
@@ -491,7 +494,7 @@ function Get-Video {
 
         [Parameter(Mandatory = $false, HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YtDlpOptions = "--output './%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '.\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
+        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
 
         [Parameter(Mandatory = $false, HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
@@ -568,6 +571,7 @@ function Get-VideoList {
             return @()
         }
         else {
+            Write-Log -ConsoleOnly -Severity 'Info' -Message "Getting video URLs from '$Path'."
             $UrlList += (Get-Content -Path $Path | Where-Object { $_.Trim() -ne '' -and $_.Trim() -notmatch '^#.*' })
         }
     }
@@ -576,6 +580,29 @@ function Get-VideoList {
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Returning $($UrlList.Length) playlist URLs."
     return $UrlList
 } # End Get-VideoList function
+
+
+
+function Get-VideoFromList {
+    param(
+        [Parameter(Mandatory = $False, HelpMessage = 'The path to the yt-dlp video list file.')]
+        [ValidateScript({Test-Path -Path $_})]
+        [string]
+        $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\video-url-list.txt',
+    
+        [Parameter( Mandatory = $False, HelpMessage = 'The yt-dlp options to supply to the download command.')]
+        [string]
+        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    )
+
+    # Get the list of URLs from the video list file.
+    $UrlList = Get-VideoList -Path $Path
+
+    # Download from each URL.
+    foreach ($Item in $UrlList) {
+        Get-Video -Url $Item -YtDlpOptions $YtDlpOptions
+    }
+}
 
 
 
