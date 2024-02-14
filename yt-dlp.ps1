@@ -6,11 +6,11 @@
 	This PowerShell script downloads content from Youtube or similar websites using the yt-dlp application.
 
 .EXAMPLE 
-	yt-dlp-video.ps1
+	yt-dlp.ps1
 	    Runs the script using default parameter values.
 
-    yt-dlp-video.ps1 -YtDlpOptions '--no-playlist'
-        Only downloads the single video provided via the URL and not all videos in the playlist.
+    yt-dlp.ps1 -Path 'C:\Users\John\scripts\powershell-yt-dlp\etc\audio-url-list.txt' -YtDlpOptions "--output 'C:/Users/John/Music/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive 'C:\Users\John\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0"
+        Downloads audio for each URL in the audio URL list file.
 	
 .NOTES 
 	Requires Windows 7 or higher and PowerShell 5.0 or greater
