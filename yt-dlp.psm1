@@ -824,7 +824,7 @@ Function Get-YtDlpSettingsMenu {
 
         [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
         [string]
-        $Branch = '1.0.0'
+        $Branch = 'master'
     )
 
     $MenuOption = $null
