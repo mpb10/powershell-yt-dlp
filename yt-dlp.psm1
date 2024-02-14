@@ -601,6 +601,7 @@ function Get-VideoFromList {
     # Download from each URL.
     foreach ($Item in $UrlList) {
         Get-Video -Url $Item -YtDlpOptions $YtDlpOptions
+        Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL '$Item'."
     }
 }
 
