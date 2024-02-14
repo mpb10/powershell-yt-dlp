@@ -494,7 +494,7 @@ function Get-Video {
 
         [Parameter(Mandatory = $false, HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
+        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
 
         [Parameter(Mandatory = $false, HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
@@ -592,7 +592,7 @@ function Get-VideoFromList {
     
         [Parameter( Mandatory = $False, HelpMessage = 'The yt-dlp options to supply to the download command.')]
         [string]
-        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
     )
 
     # Get the list of URLs from the video list file.
@@ -625,7 +625,7 @@ Function Get-YtDlpMainMenu {
 		Switch ($MenuOption) {
 			1 {
 				# Call the download menu with the default video settings configured.
-				Get-YtDownloadMenu -Type video -Path ([environment]::GetFolderPath('MyVideos'))
+				Get-YtDownloadMenu -Type video -Path ([environment]::GetFolderPath('MyVideos') + '/yt-dlp')
                 $MenuOption = $null
 			}
 			2 {
