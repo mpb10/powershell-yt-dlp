@@ -327,8 +327,8 @@ function Install-YtDlpScript {
 		Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"       
 	}
 
-    if ((Test-Path -Path "$Path\etc\video-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File -Path "$Path\etc\video-url-list.txt" }
-    if ((Test-Path -Path "$Path\etc\audio-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File -Path "$Path\etc\audio-url-list.txt" }
+    if ((Test-Path -Path "$Path\etc\video-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File "$Path\etc\video-url-list.txt" }
+    if ((Test-Path -Path "$Path\etc\audio-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File "$Path\etc\audio-url-list.txt" }
     if ((Test-Path -Path "$Path\var\download-archive.txt") -eq $false) { New-Item -Type File -Path "$Path\var\download-archive.txt" }
 
 	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
