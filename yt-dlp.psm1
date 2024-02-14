@@ -3,7 +3,7 @@
 	A collection of commandlets used to support the PowerShell-Yt-Dlp script.
 	
 .DESCRIPTION 
-	This PowerShell module is used to support the PowerShell-Yt-Dlp.
+	This PowerShell module is used to support PowerShell-Yt-Dlp.
 
 .EXAMPLE 
 	Import-Module -Force ".\yt-dlp.psm1"
@@ -13,7 +13,7 @@
 	Requires Windows 7 or higher and PowerShell 5.0 or greater
 	Author: mpb10
 	Updated: February 12th, 2024
-	Version: 0.1.0
+	Version: 1.0.0
 
 .LINK 
 	https://github.com/mpb10/powershell-yt-dlp
@@ -824,7 +824,7 @@ Function Get-YtDlpSettingsMenu {
 
         [Parameter(Mandatory = $false, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
         [string]
-        $Branch = '0.1.0'
+        $Branch = '1.0.0'
     )
 
     $MenuOption = $null
