@@ -342,7 +342,7 @@ function Install-YtDlpScript {
     }
 
     # Create the 'Download yt-dlp audio list.lnk' shortcut.
-    $PowerShellCommand = "powershell.exe -ExecutionPolicy Bypass -File `"([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1')`" -Path `"([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\audio-url-list.txt')`" -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0`""
+    $PowerShellCommand = "powershell.exe -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\audio-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0`""
     $EncodedPowerShellCommand = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($PowerShellCommand))
     New-Shortcut -Path "$Path\Download yt-dlp audio list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -EncodedCommand '$EncodedPowerShellCommand'" -StartPath "$Path\bin"
     if (Test-Path -Path "$Path\Download yt-dlp audio list.lnk") {
