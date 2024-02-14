@@ -51,7 +51,8 @@ try {
     return Write-Host "ERROR:  Failed to import the 'yt-dlp.psm1' PowerShell module."
 }
 
-# Install the 'powershell-yt-dlp' script.
+# Install/Update the 'powershell-yt-dlp' script.
+Uninstall-YtDlpScript -Path $Path
 Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut -DesktopShortcut -StartMenuShortcut
 
 # If the 'yt-dlp' PowerShell module was not imported before running this script, then remove the module.
