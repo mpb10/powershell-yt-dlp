@@ -19,6 +19,7 @@
 	https://github.com/mpb10/powershell-yt-dlp
 #>
 
+### TODO: Figure out why the shortcuts for download video/audio list aren't working.
 
 
 # Function for simulating the 'pause' command of the Windows command line.
@@ -333,7 +334,7 @@ function Install-YtDlpScript {
     if ((Test-Path -Path "$Path\var\download-archive.txt") -eq $false) { New-Item -Type File -Path "$Path\var\download-archive.txt" }
 
     # Create the 'Download yt-dlp video list.lnk' shortcut.
-    $PowerShellCommand = "powershell.exe -NoExit -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\video-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters`""
+    $PowerShellCommand = "powershell -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\video-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters`""
     $EncodedPowerShellCommand = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($PowerShellCommand))
     New-Shortcut -Path "$Path\Download yt-dlp video list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -EncodedCommand '$EncodedPowerShellCommand'" -StartPath "$Path\bin"
     if (Test-Path -Path "$Path\Download yt-dlp video list.lnk") {
@@ -344,7 +345,7 @@ function Install-YtDlpScript {
     }
 
     # Create the 'Download yt-dlp audio list.lnk' shortcut.
-    $PowerShellCommand = "powershell.exe -NoExit -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\audio-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0`""
+    $PowerShellCommand = "powershell -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\audio-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0`""
     $EncodedPowerShellCommand = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($PowerShellCommand))
     New-Shortcut -Path "$Path\Download yt-dlp audio list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -EncodedCommand '$EncodedPowerShellCommand'" -StartPath "$Path\bin"
     if (Test-Path -Path "$Path\Download yt-dlp audio list.lnk") {
