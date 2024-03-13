@@ -333,7 +333,9 @@ function Install-YtDlpScript {
     if ((Test-Path -Path "$Path\var\download-archive.txt") -eq $false) { New-Item -Type File -Path "$Path\var\download-archive.txt" }
 
     # Create the 'Download yt-dlp video list.lnk' shortcut.
-    New-Shortcut -Path "$Path\Download yt-dlp video list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File `"$Path\bin\yt-dlp-download-list.ps1`"" -StartPath "$Path\bin"
+    $PowerShellCommand = "powershell.exe -NoExit -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\video-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters`""
+    $EncodedPowerShellCommand = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($PowerShellCommand))
+    New-Shortcut -Path "$Path\Download yt-dlp video list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -EncodedCommand '$EncodedPowerShellCommand'" -StartPath "$Path\bin"
     if (Test-Path -Path "$Path\Download yt-dlp video list.lnk") {
         Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp-download-list.ps1' at: '$Path\Download yt-dlp video list.lnk'"
     }
@@ -342,9 +344,9 @@ function Install-YtDlpScript {
     }
 
     # Create the 'Download yt-dlp audio list.lnk' shortcut.
-    $PowerShellCommand = "powershell.exe -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\audio-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0`""
+    $PowerShellCommand = "powershell.exe -NoExit -ExecutionPolicy Bypass -File ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin\yt-dlp-download-list.ps1') -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\audio-url-list.txt') -YtDlpOptions `"--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0`""
     $EncodedPowerShellCommand = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($PowerShellCommand))
-    New-Shortcut -Path "$Path\Download yt-dlp audio list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -EncodedCommand '$EncodedPowerShellCommand'" -StartPath "$Path\bin"
+    New-Shortcut -Path "$Path\Download yt-dlp audio list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -EncodedCommand '$EncodedPowerShellCommand'" -StartPath "$Path\bin"
     if (Test-Path -Path "$Path\Download yt-dlp audio list.lnk") {
         Write-Log -ConsoleOnly -Severity 'Info' -Message "Created a shortcut for running 'yt-dlp-download-list.ps1' at: '$Path\Download yt-dlp audio list.lnk'"
     }
@@ -376,7 +378,7 @@ function Install-YtDlpScript {
     if ($LocalShortcut) {
         if ((Test-Path -Path "$Path\powershell-yt-dlp.lnk") -eq $false) {
             # Create the shortcut.
-            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
             if (Test-Path -Path "$Path\powershell-yt-dlp.lnk") {
@@ -387,7 +389,7 @@ function Install-YtDlpScript {
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$Path\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
         }
     }
 
@@ -397,7 +399,7 @@ function Install-YtDlpScript {
 
         if ((Test-Path -Path "$DesktopPath\powershell-yt-dlp.lnk") -eq $false) {
             # Create the shortcut.
-            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
             if (Test-Path -Path "$DesktopPath\powershell-yt-dlp.lnk") {
@@ -408,7 +410,7 @@ function Install-YtDlpScript {
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
         }
     }
 
@@ -424,7 +426,7 @@ function Install-YtDlpScript {
             }
 
             # Create the shortcut.
-            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
             
             # Ensure that the shortcut was created.
             if (Test-Path -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk") {
@@ -435,7 +437,7 @@ function Install-YtDlpScript {
             }
         } else {
             # Recreate the shortcut so that its values are up-to-date.
-            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+            New-Shortcut -Path "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
         }
     }
 
@@ -507,6 +509,7 @@ function Uninstall-YtDlpScript {
 
 
 
+# Function for downloading a video using yt-dlp.
 function Get-Video {
     param (
         [Parameter(Mandatory = $true, HelpMessage = 'The URL of the video to download.')]
@@ -883,7 +886,7 @@ Function Get-YtDlpSettingsMenu {
 			3 {
 				# Create the desktop shortcut for the script.
                 $DesktopPath = [environment]::GetFolderPath('Desktop')
-				New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+				New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
 				$null = Read-Host "Press ENTER to continue..."
                 $MenuOption = $null
 			}
