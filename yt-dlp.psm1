@@ -471,6 +471,8 @@ function Uninstall-YtDlpScript {
         "$Path\README.md",
         "$Path\LICENSE",
         "$Path\powershell-yt-dlp.lnk",
+        "$Path\Download yt-dlp video list.lnk",
+        "$Path\Download yt-dlp audio list.lnk",
         "$DesktopPath\powershell-yt-dlp.lnk",
         "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk"
     )
