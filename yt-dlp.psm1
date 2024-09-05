@@ -476,11 +476,11 @@ function Uninstall-YtDlpScript {
         "$Path\bin\yt-dlp-install.ps1",
         "$Path\bin\yt-dlp-download-video-url-list.ps1",
         "$Path\bin\yt-dlp-download-audio-url-list.ps1",
+        "$Path\bin\Install and upgrade powershell-yt-dlp.lnk",
         "$Path\README.md",
         "$Path\LICENSE",
         "$Path\powershell-yt-dlp video list.lnk",
         "$Path\powershell-yt-dlp audio list.lnk",
-        "$Path\Install and upgrade powershell-yt-dlp.lnk",
         "$DesktopPath\powershell-yt-dlp video list.lnk",
         "$DesktopPath\powershell-yt-dlp audio list.lnk",
         "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp video list.lnk",
@@ -1103,5 +1103,5 @@ Function Test-YtDlpAll {
     Test-YtDlpVideoArchive
     Test-YtDlpVideoList
     Set-Location -Path $(Split-Path -Path $Path -Parent)
-    Test-YtDlpUninstall
+    Test-YtDlpUninstallForce
 }

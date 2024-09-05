@@ -64,6 +64,18 @@ Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scri
 * Script files, the yt-dlp executables, and ffmpeg executables are located in the `bin\` directory.
   * The script files and the executables can be updated by running the `Install and upgrade powershell-yt-dlp` shortcut again, which will re-download the latest versions of each.
 
+# TESTS
+
+For developers, to run the script's tests, execute the following commands:
+
+```
+git clone https://github.com/mpb10/powershell-yt-dlp.git ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
+Set-Location -Path ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
+git checkout 0.1.0
+Import-Module -Force ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp\yt-dlp.psm1')
+Test-YtDlpAll -Branch '0.1.0'
+```
+
 # CHANGE LOG
 
 	0.1.0	September 4th, 2024
