@@ -27,7 +27,7 @@ param(
 
     [Parameter( Mandatory = $False, HelpMessage = 'The yt-dlp options to supply to the download command.')]
     [string]
-    $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(uploader)s - %(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+    $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(uploader)s - %(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive-video.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
 )
 
 # Save whether the 'yt-dlp' PowerShell module was already imported or not.

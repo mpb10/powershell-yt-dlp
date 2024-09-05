@@ -327,12 +327,14 @@ function Install-YtDlpScript {
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-download-audio-url-list.ps1" -Path "$Path\bin\yt-dlp-download-audio-url-list.ps1"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-install.ps1" -Path "$Path\bin\yt-dlp-install.ps1"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
-        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"       
+        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"
+        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/Install%20and%20upgrade%20powershell-yt-dlp.lnk" -Path "$Path\Install and upgrade powershell-yt-dlp.lnk"
 	}
 
     if ((Test-Path -Path "$Path\etc\video-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File "$Path\etc\video-url-list.txt" }
     if ((Test-Path -Path "$Path\etc\audio-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File "$Path\etc\audio-url-list.txt" }
-    if ((Test-Path -Path "$Path\var\download-archive.txt") -eq $false) { New-Item -Type File -Path "$Path\var\download-archive.txt" }
+    if ((Test-Path -Path "$Path\var\download-archive-video.txt") -eq $false) { New-Item -Type File -Path "$Path\var\download-archive-video.txt" }
+    if ((Test-Path -Path "$Path\var\download-archive-audio.txt") -eq $false) { New-Item -Type File -Path "$Path\var\download-archive-audio.txt" }
 
     # Create the 'Download yt-dlp video list.lnk' shortcut.
     if ((Test-Path -Path "$Path\powershell-yt-dlp video list.lnk") -eq $false) {
