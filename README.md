@@ -36,12 +36,18 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 #
 
-To uninstall this script and its files, open a PowerShell command prompt and run the following commands:
+To uninstall this script and its shortcuts, open a PowerShell command prompt and run the following commands:
 
 ```
 Import-Module -Force [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\yt-dlp.psm1'
-$Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp'
-Uninstall-YtDlpScript -Path $Path
+Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp'
+```
+
+To completely uninstall the script, including user modified files, run the following commands:
+
+```
+Import-Module -Force [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\yt-dlp.psm1'
+Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp' -Force
 ```
 
 # USAGE

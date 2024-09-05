@@ -328,7 +328,7 @@ function Install-YtDlpScript {
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-install.ps1" -Path "$Path\bin\yt-dlp-install.ps1"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"
-        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/Install%20and%20upgrade%20powershell-yt-dlp.lnk" -Path "$Path\Install and upgrade powershell-yt-dlp.lnk"
+        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/Install%20and%20upgrade%20powershell-yt-dlp.lnk" -Path "$Path\bin\Install and upgrade powershell-yt-dlp.lnk"
 	}
 
     if ((Test-Path -Path "$Path\etc\video-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File "$Path\etc\video-url-list.txt" }
@@ -473,14 +473,18 @@ function Uninstall-YtDlpScript {
         "$Path\bin\ffplay.exe",
         "$Path\bin\ffprobe.exe",
         "$Path\bin\yt-dlp.psm1",
-        "$Path\bin\yt-dlp-download-list.ps1",
+        "$Path\bin\yt-dlp-install.ps1",
+        "$Path\bin\yt-dlp-download-video-url-list.ps1",
+        "$Path\bin\yt-dlp-download-audio-url-list.ps1",
         "$Path\README.md",
         "$Path\LICENSE",
-        "$Path\powershell-yt-dlp.lnk",
-        "$Path\Download yt-dlp video list.lnk",
-        "$Path\Download yt-dlp audio list.lnk",
-        "$DesktopPath\powershell-yt-dlp.lnk",
-        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp.lnk"
+        "$Path\powershell-yt-dlp video list.lnk",
+        "$Path\powershell-yt-dlp audio list.lnk",
+        "$Path\Install and upgrade powershell-yt-dlp.lnk",
+        "$DesktopPath\powershell-yt-dlp video list.lnk",
+        "$DesktopPath\powershell-yt-dlp audio list.lnk",
+        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp video list.lnk",
+        "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp audio list.lnk"
     )
     foreach ($Item in $FileList) {
         try { 
