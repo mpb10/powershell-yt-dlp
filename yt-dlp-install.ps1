@@ -27,7 +27,7 @@ param(
 
     [Parameter(Mandatory = $False, HelpMessage = 'The branch of the ''powershell-yt-dlp'' GitHub repository to download from.')]
     [string]
-    $Branch = 'master'
+    $Branch = 'main'
 )
 
 # Save whether the 'yt-dlp' PowerShell module was already imported or not.
