@@ -52,6 +52,7 @@ try {
 }
 
 # Download the videos from the video list file.
+Set-PathVariable -Path [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin'
 Get-VideoFromList -Path $Path -YtDlpOptions $YtDlpOptions
 Write-Log -ConsoleOnly -Severity 'Info' -Message "Script complete."
 

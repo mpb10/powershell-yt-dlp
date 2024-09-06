@@ -6,9 +6,9 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 **Author: mpb10**
 
-**September 4th 2024**
+**September 6th 2024**
 
-**v0.2.0**
+**v0.3.0**
 
 #
 
@@ -21,7 +21,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 # INSTALLATION
 
-**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.2.0.zip
+**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.3.0.zip
 
 **Dependencies:**
 
@@ -76,9 +76,9 @@ For developers, to run the script's tests, execute the following commands:
 ```
 git clone https://github.com/mpb10/powershell-yt-dlp.git ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
 Set-Location -Path ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
-git checkout 0.2.0
+git checkout 0.3.0
 Import-Module -Force ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp\yt-dlp.psm1')
-Test-YtDlpAll -Branch '0.2.0'
+Test-YtDlpAll -Branch '0.3.0'
 ```
 
 # TO-DO
@@ -86,8 +86,13 @@ Test-YtDlpAll -Branch '0.2.0'
 1. Update PowerShell script documentation headers with more useful information and examples (Including the yt-dlp options in the examples).
 1. Ensure all versions in the PowerShell script documentation headers are aligned or remove them entirely.
 1. Cleanup the existing code for the GUI menus and finish them.
+1. Fix change log formatting.
 
 # CHANGE LOG
+
+	0.3.0	September 6th, 2024
+		Fixed download audio script downloading from video URL list file.
+    Added function to set the system PATH variable and added it to each download script.
 
 	0.2.0	September 6th, 2024
 		Adjusted the default yt-dlp options for downloading audio so that metadata is embedded into the .mp3 file.

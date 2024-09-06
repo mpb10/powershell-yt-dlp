@@ -23,7 +23,7 @@ param(
     [Parameter(Mandatory = $False, HelpMessage = 'The path to the yt-dlp video list file.')]
     [ValidateScript({Test-Path -Path $_})]
     [string]
-    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\video-url-list.txt',
+    $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\etc\audio-url-list.txt',
 
     [Parameter( Mandatory = $False, HelpMessage = 'The yt-dlp options to supply to the download command.')]
     [string]
@@ -52,6 +52,7 @@ try {
 }
 
 # Download the videos from the video list file.
+Set-PathVariable -Path [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\bin'
 Get-VideoFromList -Path $Path -YtDlpOptions $YtDlpOptions
 Write-Log -ConsoleOnly -Severity 'Info' -Message "Script complete."
 
