@@ -27,7 +27,7 @@ param(
 
     [Parameter( Mandatory = $False, HelpMessage = 'The yt-dlp options to supply to the download command.')]
     [string]
-    $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(uploader)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive-audio.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0"
+    $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyMusic'))/yt-dlp/%(uploader)s/%(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive-audio.txt' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0"
 )
 
 # Save whether the 'yt-dlp' PowerShell module was already imported or not.
