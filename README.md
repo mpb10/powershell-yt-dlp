@@ -52,7 +52,7 @@ Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scri
 
 # USAGE
 
-* This script installs to the `C:\Users\mbitt\scripts\powershell-yt-dlp` folder.
+* This script installs to the `%USERPROFILE%\scripts\powershell-yt-dlp` folder.
 * Files that are commonly modified by end-users are located in the `etc\` directory.
   * `video-url-list.txt` contains a user-defined list of URL's to download using the respective shortcut or `yt-dlp-download-video-url-list.ps1` script.
   * Each line should contain one URL.
