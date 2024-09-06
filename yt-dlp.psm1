@@ -530,7 +530,7 @@ function Get-Video {
 
         [Parameter(Mandatory = $false, HelpMessage = 'Additional yt-dlp options to pass to the download command.')]
         [string]
-        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
+        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(uploader)s - %(upload_date)s - %(title)s.%(ext)s' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters",
 
         [Parameter(Mandatory = $false, HelpMessage = 'The path to the directory containing the yt-dlp and ffmpeg executable files.')]
         [string]
@@ -628,7 +628,7 @@ function Get-VideoFromList {
     
         [Parameter( Mandatory = $False, HelpMessage = 'The yt-dlp options to supply to the download command.')]
         [string]
-        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
+        $YtDlpOptions = "--output '$([environment]::GetFolderPath('MyVideos'))/yt-dlp/%(uploader)s/%(uploader)s - %(upload_date)s - %(title)s.%(ext)s' --download-archive '$([environment]::GetFolderPath('UserProfile'))\scripts\powershell-yt-dlp\var\download-archive.txt' --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
     )
 
     # Get the list of URLs from the video list file.
@@ -1025,7 +1025,7 @@ Function Test-YtDlpVideo {
 Function Test-YtDlpAudio {
     $ErrorActionPreference = "Stop"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading audio."
-    Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-audio.%(ext)s' --no-mtime --extract-audio --audio-format mp3 --audio-quality 0"
+    Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-audio.%(ext)s' --no-mtime --embed-metadata --extract-audio --audio-format mp3 --audio-quality 0"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL 'https://www.youtube.com/watch?v=C0DPdy98e4c'."
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Filename: $((Get-ChildItem -Path "test-audio.*").Name), Length: $((Get-ChildItem -Path "test-audio.*").Length), LastWriteTime: $((Get-ChildItem -Path "test-audio.*").LastWriteTime)"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Removing '$((Get-ChildItem -Path "test-audio.*").Name)'."
