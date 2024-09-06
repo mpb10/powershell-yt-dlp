@@ -34,6 +34,11 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 1. Download the release .zip file and extract it to a folder.
 1. Run the `Install and upgrade powershell-yt-dlp` shortcut. This will install the script to `%USERPROFILE%\scripts\powershell-yt-dlp` and create start menu shortcuts.
 
+**To Update:**
+
+1. Navigate to the `%USERPROFILE%\scripts\powershell-yt-dlp\bin` folder.
+1. Run the `Install and upgrade powershell-yt-dlp` shortcut. This will update the script files and executables.
+
 #
 
 To uninstall this script and its shortcuts, open a PowerShell command prompt and run the following commands:
