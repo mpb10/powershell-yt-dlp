@@ -261,6 +261,37 @@ function Get-Ffmpeg {
 
 
 
+# Function to add the script's 'bin' folder to the system PATH variable.
+function Set-PathVariable {
+    param (
+        [Parameter(Mandatory = $true, HelpMessage = 'The directory to add to the system PATH variable.')]
+        [string]
+        $Path
+    )
+
+	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
+	if ($ENV:PATH.Split(';') -notcontains "$Path") {
+		Write-Log -ConsoleOnly -Severity 'Info' -Message "The '$Path' directory was not found in the system PATH variable."
+
+		# Add the bin directory to the system PATH variable.
+		if ($ENV:PATH.LastIndexOf(';') -eq ($ENV:PATH.Length - 1)) {
+			$ENV:PATH += "$Path"
+		}
+		else {
+			$ENV:PATH += ";$Path"
+		}
+
+		# Check that the bin directory was actually added to the system PATH variable.
+		if ($ENV:PATH.Split(';') -contains "$Path") {
+			Write-Log -ConsoleOnly -Severity 'Info' -Message "Added the '$Path' directory to the system PATH variable."
+		} else {
+			return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to add the '$Path' directory to the system PATH variable."
+		}
+	}
+} # End Get-Ffmpeg function
+
+
+
 # Function for downloading and installing powershell-yt-dlp script files and executables.
 function Install-YtDlpScript {
     param (
@@ -372,7 +403,7 @@ function Install-YtDlpScript {
 
 	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
 	if ($ENV:PATH.Split(';') -notcontains "$Path\bin") {
-		Write-Log -ConsoleOnly -Severity 'Warning' -Message "The '$Path\bin' directory was not found in the system PATH variable."
+		Write-Log -ConsoleOnly -Severity 'Info' -Message "The '$Path\bin' directory was not found in the system PATH variable."
 
 		# Add the bin directory to the system PATH variable.
 		if ($ENV:PATH.LastIndexOf(';') -eq ($ENV:PATH.Length - 1)) {
