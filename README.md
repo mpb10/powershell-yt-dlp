@@ -87,6 +87,7 @@ Test-YtDlpAll -Branch '0.3.0'
 1. Ensure all versions in the PowerShell script documentation headers are aligned or remove them entirely.
 1. Cleanup the existing code for the GUI menus and finish them.
 1. Fix change log formatting.
+1. Add usage of `Set-PathVariable` to `Install-YtDlpScript`
 
 # CHANGE LOG
 
