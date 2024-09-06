@@ -78,7 +78,7 @@ Test-YtDlpAll -Branch '0.2.0'
 
 # TO-DO
 
-1. Update PowerShell script documentation headers with more useful information and examples.
+1. Update PowerShell script documentation headers with more useful information and examples (Including the yt-dlp options in the examples).
 1. Ensure all versions in the PowerShell script documentation headers are aligned or remove them entirely.
 1. Cleanup the existing code for the GUI menus and finish them.
 
