@@ -8,7 +8,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 **September 4th 2024**
 
-**v0.1.0**
+**v0.2.0**
 
 #
 
@@ -21,7 +21,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 # INSTALLATION
 
-**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.1.0.zip
+**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.2.0.zip
 
 **Dependencies:**
 
@@ -52,7 +52,7 @@ Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scri
 
 # USAGE
 
-* This script installs to the `C:\Users\mbitt\scripts\powershell-yt-dlp` folder.
+* This script installs to the `%USERPROFILE%\scripts\powershell-yt-dlp` folder.
 * Files that are commonly modified by end-users are located in the `etc\` directory.
   * `video-url-list.txt` contains a user-defined list of URL's to download using the respective shortcut or `yt-dlp-download-video-url-list.ps1` script.
   * Each line should contain one URL.
@@ -71,12 +71,23 @@ For developers, to run the script's tests, execute the following commands:
 ```
 git clone https://github.com/mpb10/powershell-yt-dlp.git ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
 Set-Location -Path ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
-git checkout 0.1.0
+git checkout 0.2.0
 Import-Module -Force ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp\yt-dlp.psm1')
-Test-YtDlpAll -Branch '0.1.0'
+Test-YtDlpAll -Branch '0.2.0'
 ```
 
+# TO-DO
+
+1. Update PowerShell script documentation headers with more useful information and examples.
+1. Ensure all versions in the PowerShell script documentation headers are aligned or remove them entirely.
+1. Cleanup the existing code for the GUI menus and finish them.
+
 # CHANGE LOG
+
+	0.2.0	September 6th, 2024
+		Adjusted the default yt-dlp options for downloading audio so that metadata is embedded into the .mp3 file.
+    Adjusted the default yt-dlp output path for some video download functions in the PowerShell module.
+    Fixed a path in the README.
 
 	0.1.0	September 4th, 2024
 		Initial version of the script.
