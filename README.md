@@ -8,7 +8,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 **September 6th 2024**
 
-**v0.3.0**
+**v0.5.0**
 
 #
 
@@ -21,7 +21,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 # INSTALLATION
 
-**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.3.0.zip
+**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.5.0.zip
 
 **Dependencies:**
 
@@ -76,9 +76,9 @@ For developers, to run the script's tests, execute the following commands:
 ```
 git clone https://github.com/mpb10/powershell-yt-dlp.git ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
 Set-Location -Path ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
-git checkout 0.3.0
+git checkout 0.5.0
 Import-Module -Force ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp\yt-dlp.psm1')
-Test-YtDlpAll -Branch '0.3.0'
+Test-YtDlpAll -Branch '0.5.0'
 ```
 
 # TO-DO
@@ -90,6 +90,12 @@ Test-YtDlpAll -Branch '0.3.0'
 1. Add usage of `Set-PathVariable` to `Install-YtDlpScript`
 
 # CHANGE LOG
+
+	0.5.0	September 6th, 2024
+		Updated README.md with latest version.
+
+	0.4.0	September 6th, 2024
+		Fixed issue with the usage of the 'Set-PathVariable' function.
 
 	0.3.0	September 6th, 2024
 		Fixed download audio script downloading from video URL list file.
