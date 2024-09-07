@@ -17,7 +17,6 @@
     https://github.com/mpb10/powershell-yt-dlp
 #>
 
-### TODO: Figure out why the shortcuts for download video/audio list aren't working.
 
 
 # Function for simulating the 'pause' command of the Windows command line.
