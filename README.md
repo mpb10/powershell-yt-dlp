@@ -8,7 +8,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 **September 6th 2024**
 
-**v0.5.0**
+**v0.6.0**
 
 #
 
@@ -21,7 +21,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 # INSTALLATION
 
-**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.5.0.zip
+**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.6.0.zip
 
 **Dependencies:**
 
@@ -34,12 +34,16 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 1. Download the release .zip file and extract it to a folder.
 1. Run the `Install and upgrade powershell-yt-dlp` shortcut. This will install the script to `%USERPROFILE%\scripts\powershell-yt-dlp` and create start menu shortcuts.
 
+#
+
 **To Update:**
 
 1. Navigate to the `%USERPROFILE%\scripts\powershell-yt-dlp\bin` folder.
 1. Run the `Install and upgrade powershell-yt-dlp` shortcut. This will update the script files and executables.
 
 #
+
+**To Uninstall:**
 
 To uninstall this script and its shortcuts, open a PowerShell command prompt and run the following commands:
 
@@ -48,12 +52,7 @@ Import-Module -Force [environment]::GetFolderPath('UserProfile') + '\scripts\pow
 Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp'
 ```
 
-To completely uninstall the script, including user modified files, run the following commands:
-
-```
-Import-Module -Force [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\yt-dlp.psm1'
-Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp' -Force
-```
+To completely uninstall the script, including the user-modified files, add the `-Force` flag to the end of the `Uninstall-YtDlpScript` command.
 
 # USAGE
 
@@ -76,9 +75,9 @@ For developers, to run the script's tests, execute the following commands:
 ```
 git clone https://github.com/mpb10/powershell-yt-dlp.git ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
 Set-Location -Path ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
-git checkout 0.5.0
+git checkout 0.6.0
 Import-Module -Force ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp\yt-dlp.psm1')
-Test-YtDlpAll -Branch '0.5.0'
+Test-YtDlpAll -Branch '0.6.0'
 ```
 
 # TO-DO
@@ -91,23 +90,29 @@ Test-YtDlpAll -Branch '0.5.0'
 
 # CHANGE LOG
 
-	0.5.0	September 6th, 2024
-		Updated README.md with latest version.
+```
+* v0.6.0 - September 6th, 2024
+  * Re-organized repository.
+  * Update README.md formatting.
 
-	0.4.0	September 6th, 2024
-		Fixed issue with the usage of the 'Set-PathVariable' function.
+* v0.5.0 - September 6th, 2024
+  * Updated README.md with latest version.
 
-	0.3.0	September 6th, 2024
-		Fixed download audio script downloading from video URL list file.
-    Added function to set the system PATH variable and added it to each download script.
+* v0.4.0 - September 6th, 2024
+  * Fixed issue with the usage of the 'Set-PathVariable' function.
 
-	0.2.0	September 6th, 2024
-		Adjusted the default yt-dlp options for downloading audio so that metadata is embedded into the .mp3 file.
-    Adjusted the default yt-dlp output path for some video download functions in the PowerShell module.
-    Fixed a path in the README.
+* v0.3.0 - September 6th, 2024
+  * Fixed download audio script downloading from video URL list file.
+  * Added function to set the system PATH variable and added it to each download script.
 
-	0.1.0	September 4th, 2024
-		Initial version of the script.
+* v0.2.0 - September 6th, 2024
+  * Adjusted the default yt-dlp options for downloading audio so that metadata is embedded into the .mp3 file.
+  * Adjusted the default yt-dlp output path for some video download functions in the PowerShell module.
+  * Fixed a path in the README.
+
+* v0.1.0 - September 4th, 2024
+  * Initial version of the script.
+```
 
 # ADDITIONAL NOTES
 
