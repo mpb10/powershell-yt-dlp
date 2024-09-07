@@ -1,23 +1,21 @@
 <#
-.SYNOPSIS 
-	Installs the 'powershell-yt-dlp' script to the users system.
+.SYNOPSIS
+	Installs the 'powershell-yt-dlp' script to the user's system.
 	
-.DESCRIPTION 
-	Installs the 'powershell-yt-dlp' script to the users system.
-    GitHub project: https://github.com/mpb10/powershell-yt-dlp
+.DESCRIPTION
+	Installs the 'powershell-yt-dlp' script to the user's system.
+    GitHub repository: https://github.com/mpb10/powershell-yt-dlp
 
-.EXAMPLE 
+.EXAMPLE
 	yt-dlp-install.ps1
 	    Runs the script using default parameter values.
 
     yt-dlp-install.ps1 -Path 'C:\Program Files'
         Installs the script files to an alternate location.
 	
-.NOTES 
+.NOTES
 	Requires Windows 7 or higher and PowerShell 5.0 or greater
 	Author: mpb10
-	Updated: February 13th, 2024
-	Version: 1.0.0
 #>
 
 param(
