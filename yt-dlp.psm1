@@ -354,9 +354,9 @@ function Install-YtDlpScript {
 	if ((Test-Path -Path "$Path\bin\yt-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-download-video-url-list.ps1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-download-audio-url-list.ps1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-install.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false -or (Test-Path -Path "$Path\bin\Install and upgrade powershell-yt-dlp.lnk") -eq $false) {
         Write-Log -ConsoleOnly -Severity 'Warning' -Message "One or more of the PowerShell script files were not found in '$Path'."
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp.psm1" -Path "$Path\bin\yt-dlp.psm1"
-        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-download-video-url-list.ps1" -Path "$Path\bin\yt-dlp-download-video-url-list.ps1"
-        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-download-audio-url-list.ps1" -Path "$Path\bin\yt-dlp-download-audio-url-list.ps1"
-        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp-install.ps1" -Path "$Path\bin\yt-dlp-install.ps1"
+        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/scripts/yt-dlp-download-video-url-list.ps1" -Path "$Path\bin\yt-dlp-download-video-url-list.ps1"
+        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/scripts/yt-dlp-download-audio-url-list.ps1" -Path "$Path\bin\yt-dlp-download-audio-url-list.ps1"
+        Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/scripts/yt-dlp-install.ps1" -Path "$Path\bin\yt-dlp-install.ps1"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/Install%20and%20upgrade%20powershell-yt-dlp.lnk" -Path "$Path\bin\Install and upgrade powershell-yt-dlp.lnk"
