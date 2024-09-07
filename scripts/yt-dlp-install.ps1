@@ -1,23 +1,21 @@
 <#
-.SYNOPSIS 
-	Installs the 'powershell-yt-dlp' script to the users system.
-	
-.DESCRIPTION 
-	Installs the 'powershell-yt-dlp' script to the users system.
-    GitHub project: https://github.com/mpb10/powershell-yt-dlp
+.SYNOPSIS
+    Installs the 'powershell-yt-dlp' script to the user's system.
+    
+.DESCRIPTION
+    Installs the 'powershell-yt-dlp' script to the user's system.
+    GitHub repository: https://github.com/mpb10/powershell-yt-dlp
 
-.EXAMPLE 
-	yt-dlp-install.ps1
-	    Runs the script using default parameter values.
+.EXAMPLE
+    yt-dlp-install.ps1
+        Runs the script using default parameter values.
 
     yt-dlp-install.ps1 -Path 'C:\Program Files'
         Installs the script files to an alternate location.
-	
-.NOTES 
-	Requires Windows 7 or higher and PowerShell 5.0 or greater
-	Author: mpb10
-	Updated: February 13th, 2024
-	Version: 1.0.0
+    
+.NOTES
+    Requires Windows 7 or higher and PowerShell 5.0 or greater
+    Author: mpb10
 #>
 
 param(
@@ -35,13 +33,13 @@ $ModuleState = Get-Command -Module 'yt-dlp'
 
 # Find the 'yt-dlp.psm1' PowerShell module.
 if (Test-Path -Path "$PSScriptRoot\yt-dlp.psm1") {
-	$ModulePath = "$PSScriptRoot\yt-dlp.psm1"
+    $ModulePath = "$PSScriptRoot\yt-dlp.psm1"
 } elseif (Test-Path -Path "$(Get-Location)\yt-dlp.psm1") {
-	$ModulePath = "$(Get-Location)\yt-dlp.psm1"
+    $ModulePath = "$(Get-Location)\yt-dlp.psm1"
 } elseif (Test-Path -Path "$Path\bin\yt-dlp.psm1") {
-	$ModulePath = "$Path\bin\yt-dlp.psm1"
+    $ModulePath = "$Path\bin\yt-dlp.psm1"
 } else {
-	Write-Host "ERROR:  Could not find the 'yt-dlp.psm1' module file path."
+    Write-Host "ERROR:  Could not find the 'yt-dlp.psm1' module file path."
 }
 
 # Import the 'yt-dlp' PowerShell module.
