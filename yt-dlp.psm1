@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS 
-    A collection of commandlets used to support the PowerShell-Yt-Dlp script.
+    A collection of commandlets used to support the PowerShell-Yt-Dlp scripts.
     
 .DESCRIPTION 
-    This PowerShell module is used to support PowerShell-Yt-Dlp.
+    A collection of commandlets used to support the PowerShell-Yt-Dlp scripts.
 
 .EXAMPLE 
     Import-Module -Force ".\yt-dlp.psm1"
@@ -12,8 +12,6 @@
 .NOTES 
     Requires Windows 7 or higher and PowerShell 5.0 or greater
     Author: mpb10
-    Updated: February 13th, 2024
-    Version: 1.0.0
 
 .LINK 
     https://github.com/mpb10/powershell-yt-dlp
