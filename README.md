@@ -91,7 +91,8 @@ Test-YtDlpAll -Branch '0.6.0'
 ```
 * v0.6.0 - September 6th, 2024
   * Re-organized repository.
-  * Update README.md formatting.
+  * Updated usage of the 'Set-PathVariable' function.
+  * Updated README.md formatting.
   * Updated documentation headers of scripts.
   * Replaced tabs with spaces.
 
