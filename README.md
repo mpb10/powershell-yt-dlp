@@ -8,7 +8,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 **September 6th 2024**
 
-**v0.7.0**
+**v0.8.0**
 
 #
 
@@ -23,7 +23,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 # INSTALLATION
 
-**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.7.0.zip
+**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.8.0.zip
 
 **Dependencies:**
 
@@ -50,11 +50,11 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 To uninstall this script and its shortcuts, open a PowerShell command prompt and run the following commands:
 
 ```
-Import-Module -Force [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\yt-dlp.psm1'
-Uninstall-YtDlpScript -Path [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp'
+Import-Module -Force ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\yt-dlp.psm1')
+Uninstall-YtDlpScript -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp')
 ```
 
-To completely uninstall the script, including the user-modified files, add the `-Force` flag to the end of the `Uninstall-YtDlpScript` command.
+To also remove the user-modified files in the `etc\` folder, add the `-Force` flag to the end of the `Uninstall-YtDlpScript` command or simply delete the entirety of the `%USERPROFILE%\scripts\powershell-yt-dlp` folder.
 
 # USAGE
 
@@ -77,9 +77,9 @@ For developers, to run the script's tests, execute the following commands:
 ```
 git clone https://github.com/mpb10/powershell-yt-dlp.git ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
 Set-Location -Path ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
-git checkout 0.7.0
+git checkout 0.8.0
 Import-Module -Force ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp\yt-dlp.psm1')
-Test-YtDlpAll -Branch '0.7.0'
+Test-YtDlpAll -Branch '0.8.0'
 ```
 
 # TO-DO
@@ -89,6 +89,9 @@ Test-YtDlpAll -Branch '0.7.0'
 # CHANGE LOG
 
 ```
+* v0.8.0 - September 7th, 2024
+  * Updated the install instructions and commands.
+
 * v0.7.0 - September 6th, 2024
   * Fixed install shortcut pathing.
 
