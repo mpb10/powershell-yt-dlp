@@ -1,22 +1,22 @@
 <#
 .SYNOPSIS 
-	A collection of commandlets used to support the PowerShell-Yt-Dlp script.
-	
+    A collection of commandlets used to support the PowerShell-Yt-Dlp script.
+    
 .DESCRIPTION 
-	This PowerShell module is used to support PowerShell-Yt-Dlp.
+    This PowerShell module is used to support PowerShell-Yt-Dlp.
 
 .EXAMPLE 
-	Import-Module -Force ".\yt-dlp.psm1"
-	    Imports the module and allows all of the commandlets to be called elsewhere.
-	
+    Import-Module -Force ".\yt-dlp.psm1"
+        Imports the module and allows all of the commandlets to be called elsewhere.
+    
 .NOTES 
-	Requires Windows 7 or higher and PowerShell 5.0 or greater
-	Author: mpb10
-	Updated: February 13th, 2024
-	Version: 1.0.0
+    Requires Windows 7 or higher and PowerShell 5.0 or greater
+    Author: mpb10
+    Updated: February 13th, 2024
+    Version: 1.0.0
 
 .LINK 
-	https://github.com/mpb10/powershell-yt-dlp
+    https://github.com/mpb10/powershell-yt-dlp
 #>
 
 ### TODO: Figure out why the shortcuts for download video/audio list aren't working.
@@ -39,8 +39,8 @@ function Wait-Script {
 
     # If the '-NonInteractive' parameter is false, wait for the user to press a key before continuing.
     if ($Interactive -eq $true) {
-		$null = Read-Host "Press ENTER to continue..."
-	}
+        $null = Read-Host "Press ENTER to continue..."
+    }
 } # End Wait-Script function
 
 
@@ -269,25 +269,25 @@ function Set-PathVariable {
         $Path
     )
 
-	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
-	if ($ENV:PATH.Split(';') -notcontains "$Path") {
-		Write-Log -ConsoleOnly -Severity 'Info' -Message "The '$Path' directory was not found in the system PATH variable."
+    # Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
+    if ($ENV:PATH.Split(';') -notcontains "$Path") {
+        Write-Log -ConsoleOnly -Severity 'Info' -Message "The '$Path' directory was not found in the system PATH variable."
 
-		# Add the bin directory to the system PATH variable.
-		if ($ENV:PATH.LastIndexOf(';') -eq ($ENV:PATH.Length - 1)) {
-			$ENV:PATH += "$Path"
-		}
-		else {
-			$ENV:PATH += ";$Path"
-		}
+        # Add the bin directory to the system PATH variable.
+        if ($ENV:PATH.LastIndexOf(';') -eq ($ENV:PATH.Length - 1)) {
+            $ENV:PATH += "$Path"
+        }
+        else {
+            $ENV:PATH += ";$Path"
+        }
 
-		# Check that the bin directory was actually added to the system PATH variable.
-		if ($ENV:PATH.Split(';') -contains "$Path") {
-			Write-Log -ConsoleOnly -Severity 'Info' -Message "Added the '$Path' directory to the system PATH variable."
-		} else {
-			return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to add the '$Path' directory to the system PATH variable."
-		}
-	}
+        # Check that the bin directory was actually added to the system PATH variable.
+        if ($ENV:PATH.Split(';') -contains "$Path") {
+            Write-Log -ConsoleOnly -Severity 'Info' -Message "Added the '$Path' directory to the system PATH variable."
+        } else {
+            return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to add the '$Path' directory to the system PATH variable."
+        }
+    }
 } # End Set-PathVariable function
 
 
@@ -316,42 +316,42 @@ function Install-YtDlpScript {
         $StartMenuShortcut = $false
     )
 
-	# Ensure that the install directory is present.
-	if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path $Path | Out-Null
-	}
+    # Ensure that the install directory is present.
+    if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
+        New-Item -Type 'Directory' -Path $Path | Out-Null
+    }
 
-	# Ensure that the 'bin' directory is present.
-	if ((Test-Path -Path "$Path\bin" -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path "$Path\bin" | Out-Null
-	}
+    # Ensure that the 'bin' directory is present.
+    if ((Test-Path -Path "$Path\bin" -PathType 'Container') -eq $false) {
+        New-Item -Type 'Directory' -Path "$Path\bin" | Out-Null
+    }
 
-	# Ensure that the 'var' directory is present.
-	if ((Test-Path -Path "$Path\var" -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path "$Path\var" | Out-Null
-	}
+    # Ensure that the 'var' directory is present.
+    if ((Test-Path -Path "$Path\var" -PathType 'Container') -eq $false) {
+        New-Item -Type 'Directory' -Path "$Path\var" | Out-Null
+    }
 
-	# Ensure that the 'etc' directory is present.
-	if ((Test-Path -Path "$Path\etc" -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path "$Path\etc" | Out-Null
-	}
+    # Ensure that the 'etc' directory is present.
+    if ((Test-Path -Path "$Path\etc" -PathType 'Container') -eq $false) {
+        New-Item -Type 'Directory' -Path "$Path\etc" | Out-Null
+    }
 
-	# Ensure that 'yt-dlp' is installed.
-	if ((Test-Path "$Path\bin\yt-dlp.exe") -eq $False) {
-		Write-Log -ConsoleOnly -Severity 'Warning' -Message "The yt-dlp executable was not found at '$Path\bin\yt-dlp.exe'."
+    # Ensure that 'yt-dlp' is installed.
+    if ((Test-Path "$Path\bin\yt-dlp.exe") -eq $False) {
+        Write-Log -ConsoleOnly -Severity 'Warning' -Message "The yt-dlp executable was not found at '$Path\bin\yt-dlp.exe'."
 
-		Get-YtDlp -Path "$Path\bin"
-	}
+        Get-YtDlp -Path "$Path\bin"
+    }
 
-	# Ensure that 'ffmpeg' is installed.
-	if ((Test-Path -Path "$Path\bin\ffmpeg.exe") -eq $false -or (Test-Path -Path "$Path\bin\ffplay.exe") -eq $false -or (Test-Path -Path "$Path\bin\ffprobe.exe") -eq $false) {
-		Write-Log -ConsoleOnly -Severity 'Warning' -Message "One or more of the ffmpeg executables were not found in '$Path\bin\'."
+    # Ensure that 'ffmpeg' is installed.
+    if ((Test-Path -Path "$Path\bin\ffmpeg.exe") -eq $false -or (Test-Path -Path "$Path\bin\ffplay.exe") -eq $false -or (Test-Path -Path "$Path\bin\ffprobe.exe") -eq $false) {
+        Write-Log -ConsoleOnly -Severity 'Warning' -Message "One or more of the ffmpeg executables were not found in '$Path\bin\'."
 
-		Get-Ffmpeg -Path "$Path\bin"
-	}
+        Get-Ffmpeg -Path "$Path\bin"
+    }
 
-	# Ensure that the script files are installed.
-	if ((Test-Path -Path "$Path\bin\yt-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-download-video-url-list.ps1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-download-audio-url-list.ps1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-install.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false -or (Test-Path -Path "$Path\bin\Install and upgrade powershell-yt-dlp.lnk") -eq $false) {
+    # Ensure that the script files are installed.
+    if ((Test-Path -Path "$Path\bin\yt-dlp.psm1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-download-video-url-list.ps1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-download-audio-url-list.ps1") -eq $false -or (Test-Path -Path "$Path\bin\yt-dlp-install.ps1") -eq $false -or (Test-Path -Path "$Path\README.md") -eq $false -or (Test-Path -Path "$Path\LICENSE") -eq $false -or (Test-Path -Path "$Path\bin\Install and upgrade powershell-yt-dlp.lnk") -eq $false) {
         Write-Log -ConsoleOnly -Severity 'Warning' -Message "One or more of the PowerShell script files were not found in '$Path'."
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/yt-dlp.psm1" -Path "$Path\bin\yt-dlp.psm1"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/scripts/yt-dlp-download-video-url-list.ps1" -Path "$Path\bin\yt-dlp-download-video-url-list.ps1"
@@ -360,7 +360,7 @@ function Install-YtDlpScript {
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/README.md" -Path "$Path\README.md"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/LICENSE" -Path "$Path\LICENSE"
         Get-Download -Url "https://github.com/mpb10/powershell-yt-dlp/raw/$Branch/Install%20and%20upgrade%20powershell-yt-dlp.lnk" -Path "$Path\bin\Install and upgrade powershell-yt-dlp.lnk"
-	}
+    }
 
     if ((Test-Path -Path "$Path\etc\video-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File "$Path\etc\video-url-list.txt" }
     if ((Test-Path -Path "$Path\etc\audio-url-list.txt") -eq $false) { "# List video URLs to download, one URL on each line." | Out-File "$Path\etc\audio-url-list.txt" }
@@ -452,8 +452,8 @@ function Install-YtDlpScript {
             Copy-Item -Path "$Path\powershell-yt-dlp audio list.lnk" -Destination "$AppDataPath\Microsoft\Windows\Start Menu\Programs\powershell-yt-dlp\powershell-yt-dlp audio list.lnk"
         }
     }
-	
-	# If the '-LocalShortcut' parameter is not provided, remove the shortcuts from the same directory as the 'yt-dlp-download-list.ps1' script.
+    
+    # If the '-LocalShortcut' parameter is not provided, remove the shortcuts from the same directory as the 'yt-dlp-download-list.ps1' script.
     if (-Not $LocalShortcut) {
         Remove-Item -Path "$Path\powershell-yt-dlp video list.lnk", "$Path\powershell-yt-dlp audio list.lnk"
     }
@@ -657,45 +657,45 @@ function Get-VideoFromList {
 Function Get-YtDlpMainMenu {
     $MenuOption = $null
     While ($MenuOption -notin @(1, 2, 3, 0)) {
-		Clear-Host
-		Write-Host "================================================================================"
-		Write-Host "                             powershell-yt-dlp" -ForegroundColor "Yellow"
-		Write-Host "================================================================================"
-		Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
-		Write-Host "  1 - Download video
+        Clear-Host
+        Write-Host "================================================================================"
+        Write-Host "                             powershell-yt-dlp" -ForegroundColor "Yellow"
+        Write-Host "================================================================================"
+        Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
+        Write-Host "  1 - Download video
   2 - Download audio
   3 - Update executables, open documentation, uninstall script, etc.
   `n  0 - Exit`n"
         $MenuOption = (Read-Host "Option").Trim()
-		Write-Host ""
-		
-		Switch ($MenuOption) {
-			1 {
-				# Call the download menu with the default video settings configured.
-				Get-YtDownloadMenu -Type video -Path ([environment]::GetFolderPath('MyVideos') + '/yt-dlp')
+        Write-Host ""
+        
+        Switch ($MenuOption) {
+            1 {
+                # Call the download menu with the default video settings configured.
+                Get-YtDownloadMenu -Type video -Path ([environment]::GetFolderPath('MyVideos') + '/yt-dlp')
                 $MenuOption = $null
-			}
-			2 {
-				# Call the download menu with the default audio settings configured.
-				Get-YtDownloadMenu -Type audio -Path ([environment]::GetFolderPath('MyMusic'))
+            }
+            2 {
+                # Call the download menu with the default audio settings configured.
+                Get-YtDownloadMenu -Type audio -Path ([environment]::GetFolderPath('MyMusic'))
                 $MenuOption = $null
-			}
-			3 {
-				# Call the miscellaneous menu.
-				Get-YtDlpSettingsMenu
+            }
+            3 {
+                # Call the miscellaneous menu.
+                Get-YtDlpSettingsMenu
                 $MenuOption = $null
-			}
-			0 {
-				# Exit the script.
-				break
-			}
-			Default {
-				# Ensure that a valid option is provided to the main menu.
-				Write-Host "`nPlease enter a valid option.`n" -ForegroundColor "Red"
-				$null = Read-Host "Press ENTER to continue..."
-			}
-		} # End Switch statement
-	} # End While loop
+            }
+            0 {
+                # Exit the script.
+                break
+            }
+            Default {
+                # Ensure that a valid option is provided to the main menu.
+                Write-Host "`nPlease enter a valid option.`n" -ForegroundColor "Red"
+                $null = Read-Host "Press ENTER to continue..."
+            }
+        } # End Switch statement
+    } # End While loop
 }
 
 
@@ -703,7 +703,7 @@ Function Get-YtDlpMainMenu {
 Function Get-YtDownloadMenu {
     param (
         [Parameter(Mandatory = $true, HelpMessage = 'Whether to download video or audio.')]
-		[ValidateSet('video','audio')]
+        [ValidateSet('video','audio')]
         [string]
         $Type,
 
@@ -723,142 +723,142 @@ Function Get-YtDownloadMenu {
         [string]
         $YtDlpOptions = $null
     )
-	$MenuOption = $null
-	While ($MenuOption -notin @(1, 2, 3, 4, 5, 6, 0)) {
-		Clear-Host
-		Write-Host "================================================================================"
-		Write-Host "                                 Download $Type" -ForegroundColor "Yellow"
-		Write-Host "================================================================================"
-		Write-Host "`nURL:                $($Url -join "`n                    ")"
-		Write-Host "Output path:        $Path"
-		Write-Host "yt-dlp options: $YtDlpOptions"
-		Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
-		Write-Host "  1 - Download $Type"
-		Write-Host "  2 - Configure URL"
-		Write-Host "  3 - Configure yt-dlp options"
-		Write-Host "  4 - Configure format to download"
-		Write-Host "  5 - Get playlist URLs from file"
-		Write-Host "`n  0 - Cancel`n"
-		$MenuOption = (Read-Host 'Option').Trim()
-		Write-Host ""
-		
-		Switch ($MenuOption) {
-			1 {
-				# If the URL value is an array of URLs, download each one.
-				# If the URL value is not an array, download the single URL.
-				if ($Url -is [array]) {
-					foreach ($Item in $Url) {
-						# Call the video download function for each URL in the array.
-						Get-Video -Url $Item -YtDlpOptions $YtDlpOptions
+    $MenuOption = $null
+    While ($MenuOption -notin @(1, 2, 3, 4, 5, 6, 0)) {
+        Clear-Host
+        Write-Host "================================================================================"
+        Write-Host "                                 Download $Type" -ForegroundColor "Yellow"
+        Write-Host "================================================================================"
+        Write-Host "`nURL:                $($Url -join "`n                    ")"
+        Write-Host "Output path:        $Path"
+        Write-Host "yt-dlp options: $YtDlpOptions"
+        Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
+        Write-Host "  1 - Download $Type"
+        Write-Host "  2 - Configure URL"
+        Write-Host "  3 - Configure yt-dlp options"
+        Write-Host "  4 - Configure format to download"
+        Write-Host "  5 - Get playlist URLs from file"
+        Write-Host "`n  0 - Cancel`n"
+        $MenuOption = (Read-Host 'Option').Trim()
+        Write-Host ""
+        
+        Switch ($MenuOption) {
+            1 {
+                # If the URL value is an array of URLs, download each one.
+                # If the URL value is not an array, download the single URL.
+                if ($Url -is [array]) {
+                    foreach ($Item in $Url) {
+                        # Call the video download function for each URL in the array.
+                        Get-Video -Url $Item -YtDlpOptions $YtDlpOptions
 
-						# If the URL was successfully downloaded, notified the user.
-						# If the URL was not successfully downloaded, break out of the loop immediately.
-						if ($LastExitCode -eq 0) {
-							Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded $Type from '$Item' successfully.`n"
-						} else {
+                        # If the URL was successfully downloaded, notified the user.
+                        # If the URL was not successfully downloaded, break out of the loop immediately.
+                        if ($LastExitCode -eq 0) {
+                            Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded $Type from '$Item' successfully.`n"
+                        } else {
                             Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download $Type from '$Item'.`n"
                             $null = Read-Host "Press ENTER to continue..."
-							$MenuOption = $null
-							break
-						} # End if ($LastExitCode -eq 0) statement
-					} # End foreach loop
-				} else {
-					# Call the video download function.
-					Get-Video -Url $Url -YtDlpOptions $YtDlpOptions
+                            $MenuOption = $null
+                            break
+                        } # End if ($LastExitCode -eq 0) statement
+                    } # End foreach loop
+                } else {
+                    # Call the video download function.
+                    Get-Video -Url $Url -YtDlpOptions $YtDlpOptions
 
-					# If the URL was successfully downloaded, notify the user.
-					# If the URL was not successfully downloaded, return to the download menu.
-					if ($LastExitCode -eq 0) {
-						Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded $Type from '$Url' successfully.`n"
-					} else {
+                    # If the URL was successfully downloaded, notify the user.
+                    # If the URL was not successfully downloaded, return to the download menu.
+                    if ($LastExitCode -eq 0) {
+                        Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded $Type from '$Url' successfully.`n"
+                    } else {
                         Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to download $Type from '$Url'.`n"
-						$null = Read-Host "Press ENTER to continue..."
-						$MenuOption = $null
+                        $null = Read-Host "Press ENTER to continue..."
+                        $MenuOption = $null
                         break
-					} # End if ($LastExitCode -eq 0) statement
-				} # End if ($Url -isnot [string] -and $Url -is [array]) statement
+                    } # End if ($LastExitCode -eq 0) statement
+                } # End if ($Url -isnot [string] -and $Url -is [array]) statement
                 $null = Read-Host "Press ENTER to continue..."
-			}
-			2 {
-				# Prompt the user for the URL to download.
-				$Url = (Read-Host 'URL').Trim()
-				$MenuOption = $null
-			}
-			3 {
-				# Prompt the user for the yt-dlp options
-				$YtDlpOptions = (Read-Host 'yt-dlp options').Trim()
-				$MenuOption = $null
-			}
-			4 {
-				# If the URL is a single item (a string), get the formats available for download.
-				if ($Url -is [string] -and $Url -isnot [array] -and $Url.Length -gt 0) {
-					# Save the list of available download formats to a variable.
-					$TestUrlValidity = Invoke-Expression "yt-dlp -F '$Url'"
+            }
+            2 {
+                # Prompt the user for the URL to download.
+                $Url = (Read-Host 'URL').Trim()
+                $MenuOption = $null
+            }
+            3 {
+                # Prompt the user for the yt-dlp options
+                $YtDlpOptions = (Read-Host 'yt-dlp options').Trim()
+                $MenuOption = $null
+            }
+            4 {
+                # If the URL is a single item (a string), get the formats available for download.
+                if ($Url -is [string] -and $Url -isnot [array] -and $Url.Length -gt 0) {
+                    # Save the list of available download formats to a variable.
+                    $TestUrlValidity = Invoke-Expression "yt-dlp -F '$Url'"
 
-					# If the 'yt-dlp -F $URL' command failed, display the output that it failed with.
-					# If the 'yt-dlp -F $URL' command succeeded, display the formats that are available for download and prompt the user.
-					if ($LastExitCode -ne 0) {
-						Write-Host "$TestUrlValidity" -ForegroundColor "Red"
-						$null = Read-Host "Press ENTER to continue..."
-					} else {
-						$AvailableFormats = Invoke-Expression "yt-dlp -F '$URL'" | Where-Object { ! $_.StartsWith('[') -and ! $_.StartsWith('format code') -and $_ -match '^[0-9]{3}' } | ForEach-Object {
-							[PSCustomObject]@{
-								'FormatCode' = $_.Substring(0, 13).Trim() -as [Int]
-								'Extension' = $_.Substring(13, 11).Trim()
-								'Resolution' = $_.Substring(24, 11).Trim()
-								'ResolutionPixels' = $_.Substring(35, 6).Trim()
-								'Codec' = $_.Substring(41, $_.Length - 41).Trim() -replace '^.*, ([.\a-zA-Z0-9]+)@.*$', '$1'
-								'Description' = $_.Substring(41, $_.Length - 41).Trim()
-							} # End [PSCustomObject]
-						} # End $AvailableFormats ForEach-Object loop
-						$AvailableFormats.GetEnumerator() | Sort-Object -Property FormatCode | Format-Table
-						Write-Host "Enter the format code that you wish to download ([Enter] to cancel).`n"
-						$FormatOption = Read-Host 'Format code'
-		
-						# Ensure that the provided format code is valid.
-						# Break out of the loop if the user provides an empty string.
-						while ($FormatOption.Trim() -notin $AvailableFormats.FormatCode -and $FormatOption.Trim() -ne '') {
-							Write-Host "`nPlease enter a valid option from the 'FormatCode' column.`n" -ForegroundColor "Red"
-							$null = Read-Host "Press ENTER to continue..."
-							$AvailableFormats.GetEnumerator() | Sort-Object -Property FormatCode | Format-Table
-							Write-Host "Enter the format code that you wish to download ([Enter] to cancel).`n"
-							$FormatOption = Read-Host 'Format code'	
-						}
-						
-						# If the user provided a valid format code, modify the yt-dlp options with that format code.
-						if ($FormatOption.Length -gt 0) {
-							if ($YtDlpOptions -clike '*-f*') {
-								$YtDlpOptions = ($YtDlpOptions + ' ') -replace '-f ([a-zA-Z0-9]+) ', "-f $FormatOption "
-							} else {
-								$YtDlpOptions = $YtDlpOptions + " -f $FormatOption"
-							}
-						} # End if ($FormatOption.Length -gt 0) statement
-					} # End if ($LastExitCode -ne 0) statement
-				} else {
-					Write-Host "Cannot display the format options for multiple URLs. Please set only one URL first.`n" -ForegroundColor "Red"
-					$null = Read-Host "Press ENTER to continue..."
-				} # End if ($Url -is [string] -and $Url -isnot [array] -and $Url.Length -gt 0) statement
-				$MenuOption = $null
-			}
-			5 {
-				# Retrieve the URL array from the URL list file.
-				$Url = Get-VideoList -Path $VideoUrlListPath
-				Write-Host ""
-				$null = Read-Host "Press ENTER to continue..."
-				$MenuOption = $null
-			}
-			0 {
-				# Return to the main menu.
-				Clear-Host
-				break
-			}
-			Default {
-				# Ensure that a valid option is provided to the download menu.
-				Write-Host "Please enter a valid option.`n" -ForegroundColor "Red"
-				$null = Read-Host "Press ENTER to continue..."
-			}
-		} # End Switch statement
-	} # End While loop
+                    # If the 'yt-dlp -F $URL' command failed, display the output that it failed with.
+                    # If the 'yt-dlp -F $URL' command succeeded, display the formats that are available for download and prompt the user.
+                    if ($LastExitCode -ne 0) {
+                        Write-Host "$TestUrlValidity" -ForegroundColor "Red"
+                        $null = Read-Host "Press ENTER to continue..."
+                    } else {
+                        $AvailableFormats = Invoke-Expression "yt-dlp -F '$URL'" | Where-Object { ! $_.StartsWith('[') -and ! $_.StartsWith('format code') -and $_ -match '^[0-9]{3}' } | ForEach-Object {
+                            [PSCustomObject]@{
+                                'FormatCode' = $_.Substring(0, 13).Trim() -as [Int]
+                                'Extension' = $_.Substring(13, 11).Trim()
+                                'Resolution' = $_.Substring(24, 11).Trim()
+                                'ResolutionPixels' = $_.Substring(35, 6).Trim()
+                                'Codec' = $_.Substring(41, $_.Length - 41).Trim() -replace '^.*, ([.\a-zA-Z0-9]+)@.*$', '$1'
+                                'Description' = $_.Substring(41, $_.Length - 41).Trim()
+                            } # End [PSCustomObject]
+                        } # End $AvailableFormats ForEach-Object loop
+                        $AvailableFormats.GetEnumerator() | Sort-Object -Property FormatCode | Format-Table
+                        Write-Host "Enter the format code that you wish to download ([Enter] to cancel).`n"
+                        $FormatOption = Read-Host 'Format code'
+        
+                        # Ensure that the provided format code is valid.
+                        # Break out of the loop if the user provides an empty string.
+                        while ($FormatOption.Trim() -notin $AvailableFormats.FormatCode -and $FormatOption.Trim() -ne '') {
+                            Write-Host "`nPlease enter a valid option from the 'FormatCode' column.`n" -ForegroundColor "Red"
+                            $null = Read-Host "Press ENTER to continue..."
+                            $AvailableFormats.GetEnumerator() | Sort-Object -Property FormatCode | Format-Table
+                            Write-Host "Enter the format code that you wish to download ([Enter] to cancel).`n"
+                            $FormatOption = Read-Host 'Format code'    
+                        }
+                        
+                        # If the user provided a valid format code, modify the yt-dlp options with that format code.
+                        if ($FormatOption.Length -gt 0) {
+                            if ($YtDlpOptions -clike '*-f*') {
+                                $YtDlpOptions = ($YtDlpOptions + ' ') -replace '-f ([a-zA-Z0-9]+) ', "-f $FormatOption "
+                            } else {
+                                $YtDlpOptions = $YtDlpOptions + " -f $FormatOption"
+                            }
+                        } # End if ($FormatOption.Length -gt 0) statement
+                    } # End if ($LastExitCode -ne 0) statement
+                } else {
+                    Write-Host "Cannot display the format options for multiple URLs. Please set only one URL first.`n" -ForegroundColor "Red"
+                    $null = Read-Host "Press ENTER to continue..."
+                } # End if ($Url -is [string] -and $Url -isnot [array] -and $Url.Length -gt 0) statement
+                $MenuOption = $null
+            }
+            5 {
+                # Retrieve the URL array from the URL list file.
+                $Url = Get-VideoList -Path $VideoUrlListPath
+                Write-Host ""
+                $null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+            }
+            0 {
+                # Return to the main menu.
+                Clear-Host
+                break
+            }
+            Default {
+                # Ensure that a valid option is provided to the download menu.
+                Write-Host "Please enter a valid option.`n" -ForegroundColor "Red"
+                $null = Read-Host "Press ENTER to continue..."
+            }
+        } # End Switch statement
+    } # End While loop
 } # End Get-DownloadMenu function
 
 
@@ -875,13 +875,13 @@ Function Get-YtDlpSettingsMenu {
     )
 
     $MenuOption = $null
-	While ($MenuOption -notin @(1, 2, 3, 4, 5, 6, 7, 8, 0)) {
-		Clear-Host
-		Write-Host "================================================================================"
-		Write-Host "                             Miscellaneous Options" -ForegroundColor "Yellow"
-		Write-Host "================================================================================"
-		Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
-		Write-Host "  1 - Update the 'yt-dlp.exe' executable
+    While ($MenuOption -notin @(1, 2, 3, 4, 5, 6, 7, 8, 0)) {
+        Clear-Host
+        Write-Host "================================================================================"
+        Write-Host "                             Miscellaneous Options" -ForegroundColor "Yellow"
+        Write-Host "================================================================================"
+        Write-Host "`nPlease select an option:" -ForegroundColor "Yellow"
+        Write-Host "  1 - Update the 'yt-dlp.exe' executable
   2 - Update the ffmpeg executables
   3 - Create a desktop shortcut
   4 - Open powershell-yt-dlp documentation
@@ -891,67 +891,67 @@ Function Get-YtDlpSettingsMenu {
   8 - Uninstall powershell-yt-dlp
 `n  0 - Cancel`n"
         $MenuOption = (Read-Host "Option").Trim()
-		Write-Host ""
-		
-		Switch ($MenuOption) {
-			1 {
-				# Re-download the yt-dlp.exe executable file.
-				Get-YtDlp -Path ($Path + '\bin')
-				$null = Read-Host "Press ENTER to continue..."
+        Write-Host ""
+        
+        Switch ($MenuOption) {
+            1 {
+                # Re-download the yt-dlp.exe executable file.
+                Get-YtDlp -Path ($Path + '\bin')
+                $null = Read-Host "Press ENTER to continue..."
                 $MenuOption = $null
-			}
-			2 {
-				# Re-download the ffmpeg executable files.
-				Get-Ffmpeg -Path ($Path + '\bin')
-				$null = Read-Host "Press ENTER to continue..."
+            }
+            2 {
+                # Re-download the ffmpeg executable files.
+                Get-Ffmpeg -Path ($Path + '\bin')
+                $null = Read-Host "Press ENTER to continue..."
                 $MenuOption = $null
-			}
-			3 {
-				# Create the desktop shortcut for the script.
+            }
+            3 {
+                # Create the desktop shortcut for the script.
                 $DesktopPath = [environment]::GetFolderPath('Desktop')
-				New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
-				$null = Read-Host "Press ENTER to continue..."
+                New-Shortcut -Path "$DesktopPath\powershell-yt-dlp.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-list.ps1""" -StartPath "$Path\bin"
+                $null = Read-Host "Press ENTER to continue..."
                 $MenuOption = $null
-			}
-			4 {
-				# Open the link to the powershell-yt-dlp documentation for the provided branch version.
-				Start-Process "https://github.com/mpb10/powershell-yt-dlp/blob/$Branch/README.md"
-				$MenuOption = $null
-			}
-			5 {
-				# Open the link to the yt-dlp documentation.
-				Start-Process "https://github.com/yt-dlp/yt-dlp/blob/master/README.md"
-				$MenuOption = $null
-			}
-			6 {
-				# Open the link to the ffmpeg documentation.
-				Start-Process "https://www.ffmpeg.org/ffmpeg.html"
-				$MenuOption = $null
-			}
-			7 {
-				# Install the script and its shortcuts.
-				Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut -DesktopShortcut -StartMenuShortcut
-				$null = Read-Host "Press ENTER to continue..."
+            }
+            4 {
+                # Open the link to the powershell-yt-dlp documentation for the provided branch version.
+                Start-Process "https://github.com/mpb10/powershell-yt-dlp/blob/$Branch/README.md"
                 $MenuOption = $null
-			}
-			8 {
-				# Uninstall the script and its shortcuts.
-				Uninstall-YtDlpScript -Path $Path
-				$null = Read-Host "Press ENTER to continue..."
-				Exit
-			}
-			0 {
-				# Return to the main menu.
-				Clear-Host
-				break
-			}
-			Default {
-				# Ensure that a valid option is provided to the menu.
-				Write-Host "Please enter a valid option.`n" -ForegroundColor "Red"
-				$null = Read-Host "Press ENTER to continue..."
-			}
-		} # End Switch statement
-	} # End While loop
+            }
+            5 {
+                # Open the link to the yt-dlp documentation.
+                Start-Process "https://github.com/yt-dlp/yt-dlp/blob/master/README.md"
+                $MenuOption = $null
+            }
+            6 {
+                # Open the link to the ffmpeg documentation.
+                Start-Process "https://www.ffmpeg.org/ffmpeg.html"
+                $MenuOption = $null
+            }
+            7 {
+                # Install the script and its shortcuts.
+                Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut -DesktopShortcut -StartMenuShortcut
+                $null = Read-Host "Press ENTER to continue..."
+                $MenuOption = $null
+            }
+            8 {
+                # Uninstall the script and its shortcuts.
+                Uninstall-YtDlpScript -Path $Path
+                $null = Read-Host "Press ENTER to continue..."
+                Exit
+            }
+            0 {
+                # Return to the main menu.
+                Clear-Host
+                break
+            }
+            Default {
+                # Ensure that a valid option is provided to the menu.
+                Write-Host "Please enter a valid option.`n" -ForegroundColor "Red"
+                $null = Read-Host "Press ENTER to continue..."
+            }
+        } # End Switch statement
+    } # End While loop
 }
 
 
@@ -966,8 +966,8 @@ Function Test-GetYtDlpExecutables {
     $ErrorActionPreference = "Stop"
     $Path = Get-Location
     if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path $Path | Out-Null
-	}
+        New-Item -Type 'Directory' -Path $Path | Out-Null
+    }
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading yt-dlp to '.\yt-dlp.exe'."
     Get-YtDlp -Path $Path
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloading ffmpeg to '.\'."
@@ -991,8 +991,8 @@ Function Test-YtDlpInstall {
     $ErrorActionPreference = "Stop"
     $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
     if ((Test-Path -Path $Path -PathType 'Container') -eq $false) {
-		New-Item -Type 'Directory' -Path $Path | Out-Null
-	}
+        New-Item -Type 'Directory' -Path $Path | Out-Null
+    }
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Installing 'powershell-yt-dlp' from branch '$Branch' to '$Path'."
     Install-YtDlpScript -Path $Path -Branch $Branch -LocalShortcut -DesktopShortcut -StartMenuShortcut
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Test complete."
@@ -1060,8 +1060,8 @@ Function Test-YtDlpVideoArchive {
     Get-Video -Url 'https://www.youtube.com/watch?v=C0DPdy98e4c' -YtDlpOptions "--output 'test-video.%(ext)s' --download-archive test-yt-dlp-archive.txt --no-mtime --limit-rate 15M --format `"(bv*[vcodec~='^((he|a)vc|h26[45])']+ba) / (bv*+ba/b)`" --embed-subs --write-auto-subs --sub-format srt --sub-langs en --convert-subs srt --convert-thumbnails png --embed-thumbnail --embed-metadata --embed-chapters"
     Write-Log -ConsoleOnly -Severity 'Info' -Message "Downloaded video from URL 'https://www.youtube.com/watch?v=C0DPdy98e4c'."
     if (Test-Path -Path "test-video.*") {
-		return Write-Log -ConsoleOnly -Severity 'Error' -Message "The video '$((Get-ChildItem -Path "test-video.*").Name)' was re-downloaded despite having the '--download-archive' option set."
-	}
+        return Write-Log -ConsoleOnly -Severity 'Error' -Message "The video '$((Get-ChildItem -Path "test-video.*").Name)' was re-downloaded despite having the '--download-archive' option set."
+    }
     else {
         Write-Log -ConsoleOnly -Severity 'Info' -Message "The video was not re-downloaded due to the '--download-archive' option being set."
     }
