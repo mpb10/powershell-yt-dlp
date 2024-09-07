@@ -54,7 +54,7 @@ Import-Module -Force ([environment]::GetFolderPath('UserProfile') + '\scripts\po
 Uninstall-YtDlpScript -Path ([environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp')
 ```
 
-To completely uninstall the script, including the user-modified files, add the `-Force` flag to the end of the `Uninstall-YtDlpScript` command.
+To also remove the user-modified files in the `etc\` folder, add the `-Force` flag to the end of the `Uninstall-YtDlpScript` command or simply delete the entirety of the `%USERPROFILE%\scripts\powershell-yt-dlp` folder.
 
 # USAGE
 
