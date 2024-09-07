@@ -8,7 +8,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 **September 6th 2024**
 
-**v0.6.0**
+**v0.7.0**
 
 #
 
@@ -23,7 +23,7 @@ A PowerShell module and script used to operate the [yt-dlp](https://github.com/y
 
 # INSTALLATION
 
-**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.6.0.zip
+**Script download link:** https://github.com/mpb10/powershell-yt-dlp/archive/refs/tags/v0.7.0.zip
 
 **Dependencies:**
 
@@ -77,9 +77,9 @@ For developers, to run the script's tests, execute the following commands:
 ```
 git clone https://github.com/mpb10/powershell-yt-dlp.git ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
 Set-Location -Path ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp')
-git checkout 0.6.0
+git checkout 0.7.0
 Import-Module -Force ([environment]::GetFolderPath('MyDocuments') + '\powershell-yt-dlp\yt-dlp.psm1')
-Test-YtDlpAll -Branch '0.6.0'
+Test-YtDlpAll -Branch '0.7.0'
 ```
 
 # TO-DO
@@ -89,6 +89,9 @@ Test-YtDlpAll -Branch '0.6.0'
 # CHANGE LOG
 
 ```
+* v0.7.0 - September 6th, 2024
+  * Fixed install shortcut pathing.
+
 * v0.6.0 - September 6th, 2024
   * Re-organized repository.
   * Updated usage of the 'Set-PathVariable' function.
