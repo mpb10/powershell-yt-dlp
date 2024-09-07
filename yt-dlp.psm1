@@ -261,7 +261,7 @@ function Get-Ffmpeg {
 
 
 
-# Function to add the script's 'bin' folder to the system PATH variable.
+# Function to ensure that the 'bin' directory containing the executable files is in the system PATH variable.
 function Set-PathVariable {
     param (
         [Parameter(Mandatory = $true, HelpMessage = 'The directory to add to the system PATH variable.')]
@@ -288,7 +288,7 @@ function Set-PathVariable {
 			return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to add the '$Path' directory to the system PATH variable."
 		}
 	}
-} # End Get-Ffmpeg function
+} # End Set-PathVariable function
 
 
 
@@ -400,9 +400,6 @@ function Install-YtDlpScript {
         # Recreate the shortcut so that its values are up-to-date.
         New-Shortcut -Path "$Path\powershell-yt-dlp audio list.lnk" -TargetPath (Get-Command powershell.exe).Source -Arguments "-NoExit -ExecutionPolicy Bypass -File ""$Path\bin\yt-dlp-download-audio-url-list.ps1""" -StartPath "$Path\bin"
     }
-
-	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
-    Set-PathVariable -Path "$Path\bin"
 
     # If the '-DesktopShortcut' parameter is provided, create a shortcut on the desktop that is used to run the 'yt-dlp-download-list.ps1' script.
     if ($DesktopShortcut) {
