@@ -402,24 +402,7 @@ function Install-YtDlpScript {
     }
 
 	# Ensure that the 'bin' directory containing the executable files is in the system PATH variable.
-	if ($ENV:PATH.Split(';') -notcontains "$Path\bin") {
-		Write-Log -ConsoleOnly -Severity 'Info' -Message "The '$Path\bin' directory was not found in the system PATH variable."
-
-		# Add the bin directory to the system PATH variable.
-		if ($ENV:PATH.LastIndexOf(';') -eq ($ENV:PATH.Length - 1)) {
-			$ENV:PATH += "$Path\bin"
-		}
-		else {
-			$ENV:PATH += ";$Path\bin"
-		}
-
-		# Check that the bin directory was actually added to the system PATH variable.
-		if ($ENV:PATH.Split(';') -contains "$Path\bin") {
-			Write-Log -ConsoleOnly -Severity 'Info' -Message "Added the '$Path\bin' directory to the system PATH variable."
-		} else {
-			return Write-Log -ConsoleOnly -Severity 'Error' -Message "Failed to add the '$Path\bin' directory to the system PATH variable."
-		}
-	}
+    Set-PathVariable -Path "$Path\bin"
 
     # If the '-DesktopShortcut' parameter is provided, create a shortcut on the desktop that is used to run the 'yt-dlp-download-list.ps1' script.
     if ($DesktopShortcut) {
@@ -1128,6 +1111,7 @@ Function Test-YtDlpAll {
     $Path = [environment]::GetFolderPath('UserProfile') + '\scripts\powershell-yt-dlp\tests'
     Test-YtDlpInstall -Branch $Branch
     Set-Location -Path $Path
+    Set-PathVariable -Path "$Path\bin"
     Test-GetYtDlpExecutables
     Test-YtDlpVideo
     Test-YtDlpAudio
